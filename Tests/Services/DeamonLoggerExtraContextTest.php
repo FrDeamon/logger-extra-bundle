@@ -19,10 +19,10 @@ class DeamonLoggerExtraContextTest extends TestCase
 
     public function getLocaleDataset()
     {
-        return array(
+        return [
             ['fr', 'locale should be fr'],
             ['en', 'locale should be en']
-        );
+        ];
     }
 
     /**
@@ -38,9 +38,9 @@ class DeamonLoggerExtraContextTest extends TestCase
 
     public function getApplicationNameDataset()
     {
-        return array(
+        return [
             ['github.com/deamon'],
             ['foo.bar']
-        );
+        ];
     }
 }

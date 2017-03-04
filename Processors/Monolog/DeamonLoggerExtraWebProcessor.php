@@ -2,9 +2,10 @@
 namespace Deamon\LoggerExtraBundle\Processors\Monolog;
 
 use Symfony\Bridge\Monolog\Processor\WebProcessor as BaseWebProcessor;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 {
@@ -77,20 +78,22 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     {
         if (null !== $request = $this->container->get('request_stack')->getCurrentRequest()
         ) {
-            if($this->configShowExtraInfo('url')) {
-                $record['extra']['url'] = $request->getRequestUri();
-            }
-            if ($this->configShowExtraInfo('route')) {
-                $record['extra']['route'] = $request->get('_route');
-            }
-            if ($this->configShowExtraInfo('user_agent')) {
-                $record['extra']['user_agent'] = $request->server->get('HTTP_USER_AGENT');
-            }
-            if ($this->configShowExtraInfo('accept_encoding')) {
-                $record['extra']['accept_encoding'] = $request->headers->get('Accept-Encoding');
-            }
-            if ($this->configShowExtraInfo('client_ip')) {
-                $record['extra']['client_ip'] = $request->getClientIp();
+            if($request instanceof Request){
+                if($this->configShowExtraInfo('url')) {
+                    $record['extra']['url'] = $request->getRequestUri();
+                }
+                if ($this->configShowExtraInfo('route')) {
+                    $record['extra']['route'] = $request->get('_route');
+                }
+                if ($this->configShowExtraInfo('user_agent')) {
+                    $record['extra']['user_agent'] = $request->server->get('HTTP_USER_AGENT');
+                }
+                if ($this->configShowExtraInfo('accept_encoding')) {
+                    $record['extra']['accept_encoding'] = $request->headers->get('Accept-Encoding');
+                }
+                if ($this->configShowExtraInfo('client_ip')) {
+                    $record['extra']['client_ip'] = $request->getClientIp();
+                }
             }
         }
     }
