@@ -1,5 +1,5 @@
 {
-    "name" : "frdeamon/logger-extra-bundle",
+    "name" : "deamon/logger-extra-bundle",
     "license": "MIT",
     "description" : "This bundle is here to add some extra info about the context in your logs.",
     "type" : "symfony-bundle",

@@ -1,19 +1,14 @@
 #DeamonLoggerExtra Bundle
 
-[![Build Status](https://travis-ci.org/Deamon/logger-extra-bundle.svg?branch=master)](https://travis-ci.org/Deamon/logger-extra-bundle)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/2b9e464e-d291-487f-9169-8b445ee73d83/mini.png)](https://insight.sensiolabs.com/projects/2b9e464e-d291-487f-9169-8b445ee73d83)
+[![Build Status](https://travis-ci.org/FrDeamon/logger-extra-bundle.svg?branch=master)](https://travis-ci.org/FrDeamon/logger-extra-bundle)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd/mini.png)](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd)
 
 
 This project is used to add extra context information in your logs.
 
-Dans le projet qui importe le bundle
-
-Ajouter dans config.yml les handlers dans le noeud monolog
-
-
 ## Example
 
-Config sample for a project:
+Config sample of a project:
 
 ```
 monolog:
@@ -32,7 +27,7 @@ monolog:
             channels: [request, security, app, php]
 ```            
 
-With this example of monolog config, you can config the bundle to only add extra info on `default_info` handler.
+With this example of monolog config, you can config this bundle to only add extra info on `default_info` handler.
 
 ```
 deamon_logger_extra:
