@@ -1,14 +1,15 @@
 <?php
+
 namespace Deamon\LoggerExtraBundle\Tests\Services;
 
-use PHPUnit\Framework\TestCase;
 use Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext;
+use PHPUnit\Framework\TestCase;
 
 class DeamonLoggerExtraContextTest extends TestCase
 {
-
     /**
      * @dataProvider getLocaleDataset
+     *
      * @param $locale
      */
     public function testGetLocale($locale)
@@ -21,7 +22,7 @@ class DeamonLoggerExtraContextTest extends TestCase
     {
         return [
             ['fr', 'locale should be fr'],
-            ['en', 'locale should be en']
+            ['en', 'locale should be en'],
         ];
     }
 
@@ -40,7 +41,7 @@ class DeamonLoggerExtraContextTest extends TestCase
     {
         return [
             ['github.com/deamon'],
-            ['foo.bar']
+            ['foo.bar'],
         ];
     }
 }

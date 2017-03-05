@@ -1,0 +1,28 @@
+<?php
+
+$finder = PhpCsFixer\Finder::create()
+    ->exclude(array(
+        'vendor',
+        'Tests',
+    ))
+    ->in(__DIR__)
+;
+
+$rules = array(
+    '@Symfony' => true,
+    '@Symfony:risky' => true,
+    'general_phpdoc_annotation_remove' => true,
+    'linebreak_after_opening_tag' => true,
+    'no_multiline_whitespace_before_semicolons' => true,
+    'no_unreachable_default_argument_value' => true,
+    'ordered_imports' => true,
+    'phpdoc_add_missing_param_annotation' => true,
+    'phpdoc_order' => true,
+    'semicolon_after_instruction' => true,
+);
+
+return PhpCsFixer\Config::create()
+    ->setUsingCache(false)
+    ->setFinder($finder)
+    ->setRules($rules)
+    ;
