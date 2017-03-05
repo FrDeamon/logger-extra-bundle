@@ -1,7 +1,13 @@
 #DeamonLoggerExtra Bundle
 
-[![Build Status](https://travis-ci.org/FrDeamon/logger-extra-bundle.svg?branch=master)](https://travis-ci.org/FrDeamon/logger-extra-bundle)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd/mini.png)](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd)
+[![Build Status](https://travis-ci.org/FrDeamon/logger-extra-bundle.svg?branch=master&style=flat)](https://travis-ci.org/FrDeamon/logger-extra-bundle)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/?branch=master)
+![symfony version](https://img.shields.io/badge/symfony->=2.7,%20>=3.0-blue.svg)
+![php version](https://img.shields.io/badge/php->=5.6.0,%20>=7-blue.svg)
+
+
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd/big.png)](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd)
 
 
 This project is used to add extra context information in your logs.

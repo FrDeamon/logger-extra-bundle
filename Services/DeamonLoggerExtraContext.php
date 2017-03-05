@@ -1,4 +1,5 @@
 <?php
+
 namespace Deamon\LoggerExtraBundle\Services;
 
 class DeamonLoggerExtraContext
