@@ -3,15 +3,14 @@
 namespace Deamon\LoggerExtraBundle\Processors\Monolog;
 
 use Symfony\Bridge\Monolog\Processor\WebProcessor as BaseWebProcessor;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 {
     /**
-     * @var Container
+     * @var ContainerInterface
      */
     private $container = null;
 
@@ -25,17 +24,25 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private $channelPrefix;
 
+    /** @var string */
+    private $userClass;
+
+    /** @var array */
+    private $userMethods;
+
     /**
      * @var array
      */
     private $record;
 
-    public function __construct($container = null, array $config = null)
+    public function __construct(ContainerInterface $container = null, array $config = null)
     {
         parent::__construct();
         $this->container = $container;
         $this->channelPrefix = $config['channel_prefix'];
         $this->displayConfig = $config['display'];
+        $this->userClass = $config['user_class'];
+        $this->userMethods = $config['user_methods'];
     }
 
     /**
@@ -59,11 +66,9 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
         return $this->record;
     }
 
-    public function setContainer($container)
-    {
-        $this->container = $container;
-    }
-
+    /**
+     * Add extra info about the context of the generated log.
+     */
     private function addContextInfo()
     {
         $this->addInfo('env', $this->container->get('kernel')->getEnvironment());
@@ -76,6 +81,9 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
         }
     }
 
+    /**
+     * Add extra info about the request generating the log.
+     */
     private function addRequestInfo()
     {
         if (null !== $request_stack = $this->container->get('request_stack')) {
@@ -90,24 +98,29 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
         }
     }
 
+    /**
+     * Add extra info on the user generating the log.
+     */
     private function addUserInfo()
     {
         if ($this->configShowExtraInfo('user')) {
+            if (!class_exists($this->userClass) && !interface_exists($this->userClass)) {
+                return;
+            }
             $token = $this->container->get('security.token_storage')->getToken();
-            if (($token instanceof TokenInterface) && ($token->getUser() instanceof UserInterface) && null !== $user = $token->getUser()) {
-                if ($this->configShowExtraInfo('user_id') && method_exists($user, 'getId')) {
-                    $this->record['extra']['user_id'] = $user->getId();
-                }
-                if ($this->configShowExtraInfo('user_email') && method_exists($user, 'getEmail')) {
-                    $this->record['extra']['user_email'] = $user->getEmail();
-                }
-                if ($this->configShowExtraInfo('user_name') && method_exists($user, 'getUsername')) {
-                    $this->record['extra']['user_name'] = $user->getUsername();
+            if (($token instanceof TokenInterface) && ($token->getUser() instanceof $this->userClass) && null !== $user = $token->getUser()) {
+                foreach ($this->userMethods as $name => $method) {
+                    if (method_exists($user, $method)) {
+                        $this->record['extra'][$name] = $user->$method();
+                    }
                 }
             }
         }
     }
 
+    /**
+     * Add channel info to ease the log interpretation.
+     */
     private function addChannelInfo()
     {
         $this->addInfo('global_channel', $this->record['channel']);
@@ -118,6 +131,8 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     }
 
     /**
+     * Add the extra info if configured to.
+     *
      * @param string $key
      * @param mixed  $value
      */
@@ -129,6 +144,8 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     }
 
     /**
+     * Tells if the config to display the extra info is enabled or not.
+     *
      * @param string $extraInfo
      *
      * @return bool
@@ -136,5 +153,13 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     private function configShowExtraInfo($extraInfo)
     {
         return isset($this->displayConfig[$extraInfo]) && $this->displayConfig[$extraInfo];
+    }
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function setContainer(ContainerInterface $container)
+    {
+        $this->container = $container;
     }
 }

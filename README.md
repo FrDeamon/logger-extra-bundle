@@ -48,23 +48,34 @@ deamon_logger_extra:
 
 ```
 deamon_logger_extra:
-    application:  
+    application:
         name: "loc-deamonfront" #default to null 
     handlers: [default_info] #the only required field
     config:
         channel_prefix: "v0.1" #default to null
+        user_class: "\Symfony\Component\Security\Core\User\UserInterface"
+        user_methods:
+            user_name: getUsername
         display:
-            env: boolean default to true
-            locale: boolean default to true
-            application_name: boolean default to true
-            url: boolean default to true
-            route: boolean default to true
-            user_agent: boolean default to true
-            accept_encoding: boolean default to true
-            client_ip: boolean default to true
-            user: boolean default to true
-            user_id: boolean default to true
-            user_email: boolean default to true
-            user_name: boolean default to true
-            global_channel: boolean default to true
+            env: true
+            locale: boolean #default to true
+            application_name: boolean #default to true
+            url: boolean #default to true
+            route: boolean #default to true
+            user_agent: boolean #default to true
+            accept_encoding: boolean #default to true
+            client_ip: boolean #default to true
+            user: boolean #default to true
+            user_id: boolean #default to true
+            user_email: boolean #default to true
+            user_name: boolean #default to true
+            global_channel: boolean #default to true
+```
+## Minimal configuration
+
+```
+deamon_logger_extra:
+    application: ~
+    handlers: 'main'
+    config: ~
 ```
