@@ -66,13 +66,47 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayHasKeyAndEquals('client_ip', $record['extra'], '123.456.789.123');
     }
 
+    public function testAddOnlyUserInfoOnDefinedClass()
+    {
+        $config = $this->getDisplayConfig([
+            'user' => true,
+        ], null, '\Deamon\LoggerExtraBundle\Tests\Processors\Monolog\MyUserWithAllFields', [
+            'user_name' => 'getUsername',
+        ]);
+
+        $processor = new DeamonLoggerExtraWebProcessor(null, $config);
+        $container = new MyContainerForTests();
+        $container->setParameter('user', new MyUserWithOnlyUsername());
+        $processor->setContainer($container);
+        $record = $processor->__invoke($this->getRecord());
+
+        // MyUserWithOnlyUsername does not implement the user_class so no extra logs
+        $this->assertArrayNotHasKey('user_name', $record['extra']);
+    }
+
+    public function testAddUserInfoWithNotExistingClass()
+    {
+        $config = $this->getDisplayConfig([
+            'user' => true,
+        ], null, 'NotExistingUserClass');
+
+        $processor = new DeamonLoggerExtraWebProcessor(null, $config);
+        $container = new MyContainerForTests();
+        $container->setParameter('user', new MyUserWithOnlyUsername());
+        $processor->setContainer($container);
+        $record = $processor->__invoke($this->getRecord());
+
+        $this->assertArrayNotHasKey('user_name', $record['extra']);
+    }
+
     public function testAddUserInfo()
     {
         $config = $this->getDisplayConfig([
             'user' => true,
-            'user_id' => true,
-            'user_email' => true,
-            'user_name' => true,
+        ], null, 'Deamon\LoggerExtraBundle\Tests\Processors\Monolog\MyUserWithAllFields', [
+            'user_name' => 'getUsername',
+            'user_email' => 'getEmail',
+            'user_id' => 'getId',
         ]);
 
         $processor = new DeamonLoggerExtraWebProcessor(null, $config);
@@ -107,8 +141,17 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayHasKeyAndEquals('channel', $record, sprintf('prefix.%s', $originalRecord['channel']));
     }
 
-    protected function getDisplayConfig($trueValues, $channelPrefix = null)
+    protected function getDisplayConfig($trueValues, $channelPrefix = null, $user_class = null, $user_methods = null)
     {
+        if (null === $user_class) {
+            $user_class = '\Symfony\Component\Security\Core\User\UserInterface';
+        }
+
+        if (!is_array($user_methods)) {
+            $user_methods = [
+                'user_name' => 'getUsername',
+            ];
+        }
         $ret = array_merge(
             [
                 'env' => false,
@@ -119,9 +162,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
                 'user_agent' => false,
                 'accept_encoding' => false,
                 'client_ip' => false,
-                'user_id' => false,
-                'user_email' => false,
-                'user_name' => false,
+                'user' => false,
                 'global_channel' => false,
             ],
             $trueValues
@@ -129,6 +170,8 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
 
         return [
             'channel_prefix' => $channelPrefix,
+            'user_class' => $user_class,
+            'user_methods' => $user_methods,
             'display' => $ret,
         ];
     }
@@ -202,6 +245,11 @@ class MyUserWithOnlyUsername implements UserInterface
         $this->userName = $userName;
     }
 
+    public function getUsername()
+    {
+        return $this->userName;
+    }
+
     public function getRoles()
     {
     }
@@ -216,11 +264,6 @@ class MyUserWithOnlyUsername implements UserInterface
 
     public function eraseCredentials()
     {
-    }
-
-    public function getUsername()
-    {
-        return $this->userName;
     }
 }
 
