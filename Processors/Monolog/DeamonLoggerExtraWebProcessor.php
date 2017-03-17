@@ -35,7 +35,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private $record;
 
-    public function __construct(ContainerInterface $container = null, array $config = null)
+    public function __construct($container = null, array $config = null)
     {
         parent::__construct();
         $this->container = $container;
