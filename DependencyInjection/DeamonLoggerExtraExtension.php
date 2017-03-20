@@ -30,7 +30,7 @@ class DeamonLoggerExtraExtension extends Extension
         $definition->replaceArgument(1, $config['application']['name']);
 
         $definition = $container->getDefinition('deamon.logger_extra.processors.web_processor');
-        $definition->replaceArgument(1, $config['config']);
+        $definition->replaceArgument(0, $config['config']);
 
         $definition->clearTag('monolog.processor');
         foreach ($config['handlers'] as $handler) {

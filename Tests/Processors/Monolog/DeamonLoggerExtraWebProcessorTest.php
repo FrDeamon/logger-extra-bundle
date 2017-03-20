@@ -6,10 +6,8 @@ use Deamon\LoggerExtraBundle\Processors\Monolog\DeamonLoggerExtraWebProcessor;
 use Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Monolog\Logger;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Tests\Fixtures\KernelForTest;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -36,7 +34,9 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
             'application_name' => true,
         ]);
 
-        $processor = new DeamonLoggerExtraWebProcessor(new MyContainerForTests(), $config);
+        $processor = new DeamonLoggerExtraWebProcessor($config);
+        $processor->setLoggerExtraContext($this->getLoggerExtraContext());
+        $processor->setEnvironment('env_foo');
         $record = $processor->__invoke($this->getRecord());
 
         $this->assertArrayHasKeyAndEquals('env', $record['extra'], 'env_foo');
@@ -56,7 +56,8 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
             ]
         );
 
-        $processor = new DeamonLoggerExtraWebProcessor(new MyContainerForTests(), $config);
+        $processor = new DeamonLoggerExtraWebProcessor($config);
+        $processor->setRequestStack($this->getRequestStack());
         $record = $processor->__invoke($this->getRecord());
 
         $this->assertArrayHasKeyAndEquals('url', $record['extra'], 'requested_uri');
@@ -74,10 +75,9 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
             'user_name' => 'getUsername',
         ]);
 
-        $processor = new DeamonLoggerExtraWebProcessor(null, $config);
-        $container = new MyContainerForTests();
-        $container->setParameter('user', new MyUserWithOnlyUsername());
-        $processor->setContainer($container);
+        $processor = new DeamonLoggerExtraWebProcessor($config);
+        $processor->setTokenStorage($this->getTokenStorage(new MyUserWithOnlyUsername()));
+
         $record = $processor->__invoke($this->getRecord());
 
         // MyUserWithOnlyUsername does not implement the user_class so no extra logs
@@ -90,10 +90,19 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
             'user' => true,
         ], null, 'NotExistingUserClass');
 
-        $processor = new DeamonLoggerExtraWebProcessor(null, $config);
-        $container = new MyContainerForTests();
-        $container->setParameter('user', new MyUserWithOnlyUsername());
-        $processor->setContainer($container);
+        $processor = new DeamonLoggerExtraWebProcessor($config);
+        $record = $processor->__invoke($this->getRecord());
+
+        $this->assertArrayNotHasKey('user_name', $record['extra']);
+    }
+
+    public function testAddUserinfoWithNoTokenStorage()
+    {
+        $config = $this->getDisplayConfig([
+            'user' => true,
+        ]);
+
+        $processor = new DeamonLoggerExtraWebProcessor($config);
         $record = $processor->__invoke($this->getRecord());
 
         $this->assertArrayNotHasKey('user_name', $record['extra']);
@@ -109,10 +118,8 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
             'user_id' => 'getId',
         ]);
 
-        $processor = new DeamonLoggerExtraWebProcessor(null, $config);
-        $container = new MyContainerForTests();
-        $container->setParameter('user', new MyUserWithAllFields());
-        $processor->setContainer($container);
+        $processor = new DeamonLoggerExtraWebProcessor($config);
+        $processor->setTokenStorage($this->getTokenStorage(new MyUserWithAllFields()));
         $record = $processor->__invoke($this->getRecord());
 
         $this->assertArrayHasKeyAndEquals('user_id', $record['extra'], 1);
@@ -123,7 +130,8 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
     public function testAddChannelInfoWithoutChannelPrefix()
     {
         $config = $this->getDisplayConfig(['global_channel' => true]);
-        $processor = new DeamonLoggerExtraWebProcessor(new MyContainerForTests(), $config);
+        $processor = new DeamonLoggerExtraWebProcessor($config);
+
         $originalRecord = $this->getRecord();
         $record = $processor->__invoke($originalRecord);
 
@@ -133,7 +141,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
     public function testAddChannelInfoWithChannelPrefix()
     {
         $config = $this->getDisplayConfig(['global_channel' => true], 'prefix');
-        $processor = new DeamonLoggerExtraWebProcessor(new MyContainerForTests(), $config);
+        $processor = new DeamonLoggerExtraWebProcessor($config);
         $originalRecord = $this->getRecord();
         $record = $processor->__invoke($originalRecord);
 
@@ -201,38 +209,34 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
             'extra' => array(),
         );
     }
-}
 
-class MyContainerForTests extends Container
-{
-    public function get($id, $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE)
+    private function getRequestStack()
     {
-        switch ($id) {
-            case 'kernel':
-                return new KernelForTest('env_foo', false);
-            case 'deamon.logger_extra.context':
-                return new DeamonLoggerExtraContext('fr', 'foo_app');
-            case 'request_stack':
-                $request = new Request([], [], [
-                    '_route' => 'requested_route',
-                ], [], [], [
-                    'HTTP_ACCEPT-ENCODING' => 'Bar-Encoding',
-                    'HTTP_USER_AGENT' => 'user_agent_string',
-                    'REQUEST_URI' => 'requested_uri',
-                    'REMOTE_ADDR' => '123.456.789.123',
-                ]);
-                $stack = new RequestStack();
-                $stack->push($request);
+        $request = new Request([], [], [
+            '_route' => 'requested_route',
+        ], [], [], [
+            'HTTP_ACCEPT-ENCODING' => 'Bar-Encoding',
+            'HTTP_USER_AGENT' => 'user_agent_string',
+            'REQUEST_URI' => 'requested_uri',
+            'REMOTE_ADDR' => '123.456.789.123',
+        ]);
+        $stack = new RequestStack();
+        $stack->push($request);
 
-                return $stack;
-            case 'security.token_storage':
-                $storage = new TokenStorage();
-                $storage->setToken(new MyToken($this->getParameter('user')));
+        return $stack;
+    }
 
-                return $storage;
-            default:
-                return null;
-        }
+    private function getLoggerExtraContext()
+    {
+        return new DeamonLoggerExtraContext('fr', 'foo_app');
+    }
+
+    private function getTokenStorage(UserInterface $user = null)
+    {
+        $storage = new TokenStorage();
+        $storage->setToken(new MyToken($user));
+
+        return $storage;
     }
 }
 

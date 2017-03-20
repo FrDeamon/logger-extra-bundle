@@ -2,17 +2,35 @@
 
 namespace Deamon\LoggerExtraBundle\Processors\Monolog;
 
+use Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext;
 use Symfony\Bridge\Monolog\Processor\WebProcessor as BaseWebProcessor;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 {
     /**
-     * @var ContainerInterface
+     * @var string
      */
-    private $container = null;
+    private $environment = null;
+
+    /**
+     * @var DeamonLoggerExtraContext
+     */
+    private $loggerExtraContext = null;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage = null;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack = null;
 
     /**
      * @var array|null
@@ -35,10 +53,9 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private $record;
 
-    public function __construct($container = null, array $config = null)
+    public function __construct(array $config = null)
     {
         parent::__construct();
-        $this->container = $container;
         $this->channelPrefix = $config['channel_prefix'];
         $this->displayConfig = $config['display'];
         $this->userClass = $config['user_class'];
@@ -54,10 +71,6 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     {
         $this->record = parent::__invoke($record);
 
-        if ($this->container === null) {
-            return $this->record;
-        }
-
         $this->addContextInfo();
         $this->addRequestInfo();
         $this->addUserInfo();
@@ -71,13 +84,15 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private function addContextInfo()
     {
-        $this->addInfo('env', $this->container->get('kernel')->getEnvironment());
+        if (null !== $this->environment) {
+            $this->addInfo('env', $this->environment);
+        }
 
-        $context = $this->container->get('deamon.logger_extra.context');
-
-        $this->addInfo('locale', $context->getLocale());
-        if ($this->configShowExtraInfo('application_name')) {
-            $this->record['extra']['application'] = $context->getApplicationName();
+        if (null !== $this->loggerExtraContext) {
+            $this->addInfo('locale', $this->loggerExtraContext->getLocale());
+            if ($this->configShowExtraInfo('application_name')) {
+                $this->record['extra']['application'] = $this->loggerExtraContext->getApplicationName();
+            }
         }
     }
 
@@ -86,8 +101,8 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private function addRequestInfo()
     {
-        if (null !== $request_stack = $this->container->get('request_stack')) {
-            $request = $request_stack->getCurrentRequest();
+        if (null !== $this->requestStack) {
+            $request = $this->requestStack->getCurrentRequest();
             if ($request instanceof Request) {
                 $this->addInfo('url', $request->getRequestUri());
                 $this->addInfo('route', $request->get('_route'));
@@ -107,7 +122,12 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
             if (!class_exists($this->userClass) && !interface_exists($this->userClass)) {
                 return;
             }
-            $token = $this->container->get('security.token_storage')->getToken();
+
+            if (!$this->tokenStorage instanceof TokenStorage) {
+                return;
+            }
+
+            $token = $this->tokenStorage->getToken();
             if (($token instanceof TokenInterface) && ($token->getUser() instanceof $this->userClass) && null !== $user = $token->getUser()) {
                 foreach ($this->userMethods as $name => $method) {
                     if (method_exists($user, $method)) {
@@ -156,10 +176,34 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     }
 
     /**
-     * @param ContainerInterface $container
+     * @param DeamonLoggerExtraContext $loggerExtraContext
      */
-    public function setContainer(ContainerInterface $container)
+    public function setLoggerExtraContext(DeamonLoggerExtraContext $loggerExtraContext)
     {
-        $this->container = $container;
+        $this->loggerExtraContext = $loggerExtraContext;
+    }
+
+    /**
+     * @param string $environment
+     */
+    public function setEnvironment($environment)
+    {
+        $this->environment = $environment;
+    }
+
+    /**
+     * @param TokenStorageInterface $tokenStorage
+     */
+    public function setTokenStorage(TokenStorageInterface $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
+    /**
+     * @param RequestStack $requestStack
+     */
+    public function setRequestStack(RequestStack $requestStack)
+    {
+        $this->requestStack = $requestStack;
     }
 }

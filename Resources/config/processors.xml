@@ -12,8 +12,9 @@
             <tag name="monolog.processor" handler="default_info"/>
             <tag name="monolog.processor" handler="default_notice"/>
             <argument />
-            <argument />
-            <call method="setContainer"><argument type="service" id="service_container"/></call>
+            <call method="setLoggerExtraContext"><argument type="service" id="deamon.logger_extra.context" /></call>
+            <call method="setEnvironment"><argument type="string">%kernel.environment%</argument></call>
+            <call method="setTokenStorage"><argument type="service" id="security.token_storage" /></call>
         </service>
     </services>
 </container>
