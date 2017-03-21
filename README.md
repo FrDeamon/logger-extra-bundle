@@ -1,4 +1,5 @@
-#DeamonLoggerExtra Bundle
+DeamonLoggerExtra Bundle
+==============================
 
 [![Build Status](https://travis-ci.org/FrDeamon/logger-extra-bundle.svg?branch=master&style=flat)](https://travis-ci.org/FrDeamon/logger-extra-bundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/?branch=master)
@@ -12,11 +13,46 @@
 
 This project is used to add extra context information in your logs.
 
-## Example
+Requirements
+----------------
+php 5.6.0
 
-Config sample of a project:
+symfony/security
+
+symfony/dependency-injection
+
+symfony/monolog-bridge
+
+symfony/http-foundation
+
+symfony/http-kernel
+
+symfony/config
+
+Compatible with Symfony starting from 2.7
+
+Installation
+----------------
+
+You need to add a package to your dependency list :
+
+    // composer.json
+    "deamon/logger-extra-bundle": "^2.0"
+
+Then enable the bundle into your kernel
+
+    // app/AppKernel.php
+    new Deamon\LoggerExtraBundle\DeamonLoggerExtraBundle(),
+
+Finally you need to configure the bundle.
+
+
+## Config Example
+
+Given this config sample of a project:
 
 ```
+// app/config/config.yml
 monolog:
     handlers:
         default_info:
@@ -33,9 +69,10 @@ monolog:
             channels: [request, security, app, php]
 ```            
 
-With this example of monolog config, you can config this bundle to only add extra info on `default_info` handler.
+With this example of monolog config, you can configure this bundle to only add extra info on `default_info` handler.
 
 ```
+// app/config/config.yml
 deamon_logger_extra:
     application:  
         name: "loc-deamonfront"
@@ -47,35 +84,33 @@ deamon_logger_extra:
 ## Config reference
 
 ```
+// app/config/config.yml
 deamon_logger_extra:
     application:
-        name: "loc-deamonfront" #default to null 
-    handlers: [default_info] #the only required field
+        name: "loc-deamonfront" # default to null 
+    handlers: [default_info] # the only required field
     config:
-        channel_prefix: "v0.1" #default to null
-        user_class: "\Symfony\Component\Security\Core\User\UserInterface"
+        channel_prefix: "v0.1" # default to null
+        user_class: "\Symfony\Component\Security\Core\User\UserInterface" # default value
         user_methods:
-            user_name: getUsername
+            user_name: getUsername # default value
         display:
-            env: true
-            locale: boolean #default to true
-            application_name: boolean #default to true
-            url: boolean #default to true
-            route: boolean #default to true
-            user_agent: boolean #default to true
-            accept_encoding: boolean #default to true
-            client_ip: boolean #default to true
-            user: boolean #default to true
-            user_id: boolean #default to true
-            user_email: boolean #default to true
-            user_name: boolean #default to true
-            global_channel: boolean #default to true
+            env: false # default to true
+            locale: false # default to true
+            application_name: false # default to true
+            url: false # default to true
+            route: false # default to true
+            user_agent: false # default to true
+            accept_encoding: false # default to true
+            client_ip: false # default to true
+            user: false # default to true
+            global_channel: false # default to true
 ```
 ## Minimal configuration
 
 ```
 deamon_logger_extra:
     application: ~
-    handlers: 'main'
+    handlers: 'default_info'
     config: ~
 ```
