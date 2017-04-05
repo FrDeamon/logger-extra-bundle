@@ -118,24 +118,48 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private function addUserInfo()
     {
-        if ($this->configShowExtraInfo('user')) {
-            if (!class_exists($this->userClass) && !interface_exists($this->userClass)) {
-                return;
-            }
+        if (!$this->configShowExtraInfo('user')) {
+            return;
+        }
 
-            if (!$this->tokenStorage instanceof TokenStorage) {
-                return;
-            }
+        if (!class_exists($this->userClass) && !interface_exists($this->userClass)) {
+            return;
+        }
 
-            $token = $this->tokenStorage->getToken();
-            if (($token instanceof TokenInterface) && ($token->getUser() instanceof $this->userClass) && null !== $user = $token->getUser()) {
-                foreach ($this->userMethods as $name => $method) {
-                    if (method_exists($user, $method)) {
-                        $this->record['extra'][$name] = $user->$method();
-                    }
-                }
+        if (!$this->tokenStorage instanceof TokenStorage) {
+            return;
+        }
+
+        $token = $this->tokenStorage->getToken();
+        if ($this->isUserInstanceValid($token) && null !== $user = $token->getUser()) {
+            $this->appendUserMethodInfo($user);
+        }
+    }
+
+    /**
+     * append method result of user object
+     *
+     * @param $user
+     */
+    private function appendUserMethodInfo($user)
+    {
+        foreach ($this->userMethods as $name => $method) {
+            if (method_exists($user, $method)) {
+                $this->record['extra'][$name] = $user->$method();
             }
         }
+    }
+
+    /**
+     * Check if passed token is an instance of TokenInterface and an instance of config UserClass
+     *
+     * @param $token
+     *
+     * @return bool
+     */
+    private function isUserInstanceValid($token)
+    {
+        return $token instanceof TokenInterface && $token->getUser() instanceof $this->userClass;
     }
 
     /**
