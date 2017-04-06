@@ -45,7 +45,7 @@ class DeamonLoggerExtraExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $definition1->getArgument(1));
 
         $definition2 = $this->container->getDefinition('deamon.logger_extra.processors.web_processor');
-        $this->assertEquals($configs[0]['config'], $definition2->getArgument(1));
+        $this->assertEquals($configs[0]['config'], $definition2->getArgument(0));
 
         $this->assertTrue($definition2->hasTag('monolog.processor'));
         $tag = $definition2->getTag('monolog.processor');
@@ -87,7 +87,7 @@ class DeamonLoggerExtraExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($definition1->getArgument(1));
 
         $definition2 = $this->container->getDefinition('deamon.logger_extra.processors.web_processor');
-        $this->assertEquals($defaultConfigValues, $definition2->getArgument(1));
+        $this->assertEquals($defaultConfigValues, $definition2->getArgument(0));
     }
 
     public function testConvertStringHandlerToArray()
