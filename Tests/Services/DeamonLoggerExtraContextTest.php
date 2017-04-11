@@ -3,7 +3,7 @@
 namespace Deamon\LoggerExtraBundle\Tests\Services;
 
 use Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_TestCase as TestCase;
 
 class DeamonLoggerExtraContextTest extends TestCase
 {
