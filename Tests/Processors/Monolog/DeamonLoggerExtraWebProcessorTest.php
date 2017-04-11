@@ -4,7 +4,7 @@ namespace Deamon\LoggerExtraBundle\Tests\Processors\Monolog;
 
 use Deamon\LoggerExtraBundle\Processors\Monolog\DeamonLoggerExtraWebProcessor;
 use Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
