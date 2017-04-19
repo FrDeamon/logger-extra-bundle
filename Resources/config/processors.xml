@@ -15,6 +15,7 @@
             <call method="setLoggerExtraContext"><argument type="service" id="deamon.logger_extra.context" /></call>
             <call method="setEnvironment"><argument type="string">%kernel.environment%</argument></call>
             <call method="setTokenStorage"><argument type="service" id="security.token_storage" /></call>
+            <call method="setRequestStack"><argument type="service" id="request_stack" /></call>
         </service>
     </services>
 </container>
