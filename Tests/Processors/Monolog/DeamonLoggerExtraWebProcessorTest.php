@@ -10,8 +10,12 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Tests\Fixtures\KernelForTest;
+use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class DeamonLoggerExtraWebProcessorTest extends TestCase
@@ -182,9 +186,10 @@ class MyContainerForTests extends Container
                 $stack->push($request);
 
                 return $stack;
-            case 'security.token_storage':
-                $storage = new TokenStorage();
-                $storage->setToken(new MyToken($this->getParameter('user')));
+            case 'security.context':
+                $token = new MyToken($this->getParameter('user'));
+                $storage = new SecurityContext(new MyAuthenticationManager($token), new MyAccessDecisionManager());
+                $storage->setToken($token);
 
                 return $storage;
             default:
@@ -257,5 +262,71 @@ class MyToken extends AbstractToken
 
     public function getCredentials()
     {
+    }
+}
+class MyAuthenticationManager implements AuthenticationManagerInterface
+{
+
+    private $token;
+
+    public function __construct(TokenInterface $token = null)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * Attempts to authenticate a TokenInterface object.
+     *
+     * @param TokenInterface $token The TokenInterface instance to authenticate
+     *
+     * @return TokenInterface An authenticated TokenInterface instance, never null
+     *
+     * @throws AuthenticationException if the authentication fails
+     */
+    public function authenticate(TokenInterface $token)
+    {
+        return $this->token;
+    }
+}
+
+class MyAccessDecisionManager implements AccessDecisionManagerInterface
+{
+
+    /**
+     * Decides whether the access is possible or not.
+     *
+     * @param TokenInterface $token A TokenInterface instance
+     * @param array $attributes An array of attributes associated with the method being invoked
+     * @param object $object The object to secure
+     *
+     * @return bool    true if the access is granted, false otherwise
+     */
+    public function decide(TokenInterface $token, array $attributes, $object = null)
+    {
+        return true;
+    }
+
+    /**
+     * Checks if the access decision manager supports the given attribute.
+     *
+     * @param string $attribute An attribute
+     *
+     * @return bool    true if this decision manager supports the attribute, false otherwise
+     */
+    public function supportsAttribute($attribute)
+    {
+        return true;
+    }
+
+    /**
+     * Checks if the access decision manager supports the given class.
+     *
+     * @param string $class A class name
+     *
+     * @return true if this decision manager can process the class
+     */
+    public function supportsClass($class)
+    {
+        return true;
     }
 }

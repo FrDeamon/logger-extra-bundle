@@ -93,7 +93,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     private function addUserInfo()
     {
         if ($this->configShowExtraInfo('user')) {
-            $token = $this->container->get('security.token_storage')->getToken();
+            $token = $this->container->get('security.context')->getToken();
             if (($token instanceof TokenInterface) && ($token->getUser() instanceof UserInterface) && null !== $user = $token->getUser()) {
                 if ($this->configShowExtraInfo('user_id') && method_exists($user, 'getId')) {
                     $this->record['extra']['user_id'] = $user->getId();
