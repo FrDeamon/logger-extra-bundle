@@ -1,9 +1,9 @@
-#DeamonLoggerExtra Bundle
+# DeamonLoggerExtra Bundle
 
-[![Build Status](https://travis-ci.org/FrDeamon/logger-extra-bundle.svg?branch=master&style=flat)](https://travis-ci.org/FrDeamon/logger-extra-bundle)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/?branch=master)
-![symfony version](https://img.shields.io/badge/symfony->=2.7,%20>=3.0-blue.svg)
+[![Build Status](https://travis-ci.org/FrDeamon/logger-extra-bundle.svg?branch=0.1&style=flat)](https://travis-ci.org/FrDeamon/logger-extra-bundle)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/badges/quality-score.png?b=0.1)](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/?branch=0.1)
+[![Code Coverage](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/badges/coverage.png?b=0.1)](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/?branch=0.1)
+![symfony version](https://img.shields.io/badge/symfony->=2.5,%20<3.0-blue.svg)
 ![php version](https://img.shields.io/badge/php->=5.5.0,%20>=7-blue.svg)
 
 
