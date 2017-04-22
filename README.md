@@ -11,7 +11,9 @@ DeamonLoggerExtra Bundle
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd/big.png)](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd)
 
 
-This project is used to add extra context information in your logs.
+This project is used to add extra context information in your logs.  
+
+If you need compatibility with Symfony<2.7, have a look at versions <1.0.  
 
 Requirements
 ----------------
