@@ -42,7 +42,9 @@ class DeamonLoggerExtraExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->container->hasDefinition('deamon.logger_extra.processors.web_processor'));
 
         $definition1 = $this->container->getDefinition('deamon.logger_extra.context');
-        $this->assertEquals('foo', $definition1->getArgument(1));
+        $this->assertEquals('foo', $definition1->getArgument(0));
+        $this->assertCount(2, $definition1->getArguments());
+        $this->assertEquals('fr', $definition1->getArgument(1));
 
         $definition2 = $this->container->getDefinition('deamon.logger_extra.processors.web_processor');
         $this->assertEquals($configs[0]['config'], $definition2->getArgument(0));
@@ -84,6 +86,8 @@ class DeamonLoggerExtraExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->container->hasDefinition('deamon.logger_extra.processors.web_processor'));
 
         $definition1 = $this->container->getDefinition('deamon.logger_extra.context');
+        $this->assertNull($definition1->getArgument(0));
+        $this->assertCount(2, $definition1->getArguments());
         $this->assertNull($definition1->getArgument(1));
 
         $definition2 = $this->container->getDefinition('deamon.logger_extra.processors.web_processor');
@@ -120,6 +124,7 @@ class DeamonLoggerExtraExtensionTest extends \PHPUnit_Framework_TestCase
         return [
             'application' => [
                 'name' => 'foo',
+                'locale' => 'fr',
             ],
             'handlers' => ['bar'],
             'config' => [

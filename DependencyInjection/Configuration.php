@@ -24,6 +24,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('application')->isRequired()
                     ->children()
                         ->scalarNode('name')->defaultNull()->cannotBeEmpty()->end()
+                        ->scalarNode('locale')->defaultNull()->end()
                     ->end()
                 ->end()
                 ->arrayNode('handlers')->isRequired()

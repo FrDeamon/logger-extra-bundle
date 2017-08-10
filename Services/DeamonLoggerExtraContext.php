@@ -7,10 +7,10 @@ class DeamonLoggerExtraContext
     private $locale;
     private $applicationName;
 
-    public function __construct($locale, $applicationName)
+    public function __construct($applicationName, $locale = null)
     {
-        $this->locale = $locale;
         $this->applicationName = $applicationName;
+        $this->locale = $locale;
     }
 
     public function getLocale()

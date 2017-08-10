@@ -9,7 +9,6 @@
     </parameters>
     <services>
         <service id="deamon.logger_extra.context" class="%deamon.logger_extra.context.class%">
-            <argument type="string">%locale%</argument>
             <argument />
         </service>
     </services>
