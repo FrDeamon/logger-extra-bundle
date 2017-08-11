@@ -137,7 +137,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     }
 
     /**
-     * append method result of user object
+     * append method result of user object.
      *
      * @param $user
      */
@@ -151,7 +151,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     }
 
     /**
-     * Check if passed token is an instance of TokenInterface and an instance of config UserClass
+     * Check if passed token is an instance of TokenInterface and an instance of config UserClass.
      *
      * @param $token
      *
@@ -182,7 +182,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private function addInfo($key, $value)
     {
-        if ($this->configShowExtraInfo($key)) {
+        if ($this->configShowExtraInfo($key) && $value !== null) {
             $this->record['extra'][$key] = $value;
         }
     }

@@ -89,7 +89,8 @@ deamon_logger_extra:
 // app/config/config.yml
 deamon_logger_extra:
     application:
-        name: "loc-deamonfront" # default to null 
+        name: "loc-deamonfront" # default to null
+        locale: "fr" # default to null
     handlers: [default_info] # the only required field
     config:
         channel_prefix: "v0.1" # default to null

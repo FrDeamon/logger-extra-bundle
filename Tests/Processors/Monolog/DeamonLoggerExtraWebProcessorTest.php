@@ -44,6 +44,27 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayHasKeyAndEquals('application', $record['extra'], 'foo_app');
     }
 
+    /**
+     * @runInSeparateProcess
+     */
+    public function testAddContextInfoWithoutLocale()
+    {
+        $config = $this->getDisplayConfig([
+            'env' => true,
+            'locale' => true,
+            'application_name' => true,
+        ]);
+
+        $processor = new DeamonLoggerExtraWebProcessor($config);
+        $processor->setLoggerExtraContext($this->getLoggerExtraContext(null));
+        $processor->setEnvironment('env_foo');
+        $record = $processor->__invoke($this->getRecord());
+
+        $this->assertArrayHasKeyAndEquals('env', $record['extra'], 'env_foo');
+        $this->assertArrayNotHasKey('locale', $record['extra'], 'fr');
+        $this->assertArrayHasKeyAndEquals('application', $record['extra'], 'foo_app');
+    }
+
     public function testAddRequestInfo()
     {
         $config = $this->getDisplayConfig(
@@ -226,9 +247,9 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         return $stack;
     }
 
-    private function getLoggerExtraContext()
+    private function getLoggerExtraContext($locale = 'fr')
     {
-        return new DeamonLoggerExtraContext('fr', 'foo_app');
+        return new DeamonLoggerExtraContext('foo_app', $locale);
     }
 
     private function getTokenStorage(UserInterface $user = null)
