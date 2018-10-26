@@ -2,7 +2,7 @@
     "name": "deamon/logger-extra-bundle",
     "license": "MIT",
     "description": "This bundle is here to add some extra info about the context in your logs.",
-    "type": "bundle",
+    "type": "symfony-bundle",
     "authors": [
         {
             "name": "Bastien DURAND",
@@ -25,6 +25,9 @@
         "symfony/http-foundation": "^4.0",
         "symfony/config": "^4.0"
     },
+    "require-dev": {
+        "symfony/phpunit-bridge": "*"
+    },
     "autoload": {
         "psr-4": {
             "Deamon\\LoggerExtraBundle\\": ""
@@ -32,14 +35,14 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0-dev"
+            "dev-master": "4.0-dev"
         }
+    },
+    "suggest": {
+        "graylog2/gelf-php": "For the possibility to send monolog messages to a graylog server such as ELK"
     },
     "support": {
         "issues": "https://github.com/FrDeamon/logger-extra-bundle/issues",
         "source": "https://github.com/FrDeamon/logger-extra-bundle"
-    },
-    "require-dev": {
-        "symfony/phpunit-bridge": "*"
     }
 }

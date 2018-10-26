@@ -4,12 +4,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter key="deamon.logger_extra.context.class">Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext</parameter>
-    </parameters>
     <services>
-        <service id="deamon.logger_extra.context" class="%deamon.logger_extra.context.class%">
-            <argument />
-        </service>
+        <service id="deamon.logger_extra.context" class="Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext" />
+        <service id="Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext" alias="deamon.logger_extra.context" />
     </services>
 </container>

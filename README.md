@@ -37,17 +37,19 @@ Installation
 ----------------
 
 You need to add a package to your dependency list :
-
+```
     // composer.json
     "deamon/logger-extra-bundle": "^4.0"
+```
 
 Then enable the bundle into your kernel
-
+```
     // config/bundles.php
     return [
         // ...
         App\Acme\TestBundle\AcmeTestBundle::class => ['all' => true],
     ];
+```
 
 Finally you need to configure the bundle.
 
@@ -60,18 +62,11 @@ Given this config sample of a project:
 // app/config/config.yml
 monolog:
     handlers:
-        default_info:
-            type: gelf
-            publisher:
-                hostname: "%graylog_host%"
-            level: INFO
-            channels: [!request, !security, !app, !monitoring, !deprecation, !php]
-        default_notice:
-            type: gelf
-            publisher:
-                hostname: "%graylog_host%"
-            level: NOTICE
-            channels: [request, security, app, php]
+        main:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+            channels: ["!event"]
 ```            
 
 With this example of monolog config, you can configure this bundle to only add extra info on `default_info` handler.
@@ -81,7 +76,7 @@ With this example of monolog config, you can configure this bundle to only add e
 deamon_logger_extra:
     application:  
         name: "loc-deamonfront"
-    handlers: [default_info]
+    handlers: [main]
     config:
         channel_prefix: "v0.1"
 ```
@@ -89,15 +84,15 @@ deamon_logger_extra:
 ## Config reference
 
 ```
-// app/config/config.yml
+// config/packages/deamon_logger_extra.yaml
 deamon_logger_extra:
     application:
         name: "loc-deamonfront" # default to null
         locale: "fr" # default to null
-    handlers: [default_info] # the only required field
+    handlers: [main] # the only required field
     config:
         channel_prefix: "v0.1" # default to null
-        user_class: "\Symfony\Component\Security\Core\User\UserInterface" # default value
+        user_class: "\\Symfony\\\Component\\Security\\Core\\User\\UserInterface" # default to null
         user_methods:
             user_name: getUsername # default value
         display:
@@ -115,8 +110,9 @@ deamon_logger_extra:
 ## Minimal configuration
 
 ```
+// config/packages/deamon_logger_extra.yaml
 deamon_logger_extra:
     application: ~
-    handlers: 'default_info'
+    handlers: 'main'
     config: ~
 ```

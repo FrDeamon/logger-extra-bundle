@@ -3,9 +3,10 @@
 namespace DependencyInjection;
 
 use Deamon\LoggerExtraBundle\DependencyInjection\DeamonLoggerExtraExtension;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class DeamonLoggerExtraExtensionTest extends \PHPUnit_Framework_TestCase
+class DeamonLoggerExtraExtensionTest extends TestCase
 {
     /**
      * @var DeamonLoggerExtraExtension

@@ -15,7 +15,7 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('deamon_logger_extra');
@@ -39,7 +39,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('config')->isRequired()->addDefaultsIfNotSet()
                     ->children()
                         ->scalarNode('channel_prefix')->defaultNull()->end()
-                        ->scalarNode('user_class')->defaultValue('\Symfony\Component\Security\Core\User\UserInterface')->end()
+                        ->scalarNode('user_class')->defaultValue(null)->end()
                         ->arrayNode('user_methods')
                             ->useAttributeAsKey('value')
                             ->normalizeKeys(false)
