@@ -64,7 +64,7 @@ class DeamonLoggerExtraExtensionTest extends TestCase
 
         $defaultConfigValues = [
             'channel_prefix' => null,
-            'user_class' => '\Symfony\Component\Security\Core\User\UserInterface',
+            'user_class' => null,
             'user_methods' => [
                 'user_name' => 'getUsername',
             ],

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 {
@@ -139,9 +140,9 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     /**
      * append method result of user object.
      *
-     * @param string $user
+     * @param UserInterface $user
      */
-    private function appendUserMethodInfo(string $user): void
+    private function appendUserMethodInfo(UserInterface $user): void
     {
         foreach ($this->userMethods as $name => $method) {
             if (method_exists($user, $method)) {
