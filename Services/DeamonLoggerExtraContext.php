@@ -13,7 +13,7 @@ class DeamonLoggerExtraContext
      */
     private $applicationName;
 
-    public function __construct(string $applicationName, ?string $locale = null)
+    public function __construct(?string $applicationName, ?string $locale = null)
     {
         $this->applicationName = $applicationName;
         $this->locale = $locale;
