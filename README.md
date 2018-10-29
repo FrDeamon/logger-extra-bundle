@@ -13,25 +13,20 @@ DeamonLoggerExtra Bundle
 
 This project is used to add extra context information in your logs.  
 
-If you need compatibility with Symfony<2.7, have a look at versions <1.0.  
+If you need compatibility with previous Symfony versions, have a look at previous releases.  
 
 Requirements
 ----------------
-php 5.6.0
+php >=7.1
 
 symfony/security
-
 symfony/dependency-injection
-
 symfony/monolog-bridge
-
-symfony/http-foundation
-
 symfony/http-kernel
-
+symfony/http-foundation
 symfony/config
 
-Compatible with Symfony starting from 2.7
+Compatible with Symfony starting from 4.0
 
 Installation
 ----------------
@@ -59,7 +54,7 @@ Finally you need to configure the bundle.
 Given this config sample of a project:
 
 ```
-// app/config/config.yml
+// config/packages/monolog.yml
 monolog:
     handlers:
         main:
@@ -69,10 +64,10 @@ monolog:
             channels: ["!event"]
 ```            
 
-With this example of monolog config, you can configure this bundle to only add extra info on `default_info` handler.
+With this example of monolog config, you can configure this bundle to only add extra info on `main` handler.
 
 ```
-// app/config/config.yml
+// config/packages/deamon_logger_extra.yml
 deamon_logger_extra:
     application:  
         name: "loc-deamonfront"
