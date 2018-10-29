@@ -3,9 +3,10 @@
 namespace DependencyInjection;
 
 use Deamon\LoggerExtraBundle\DependencyInjection\DeamonLoggerExtraExtension;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class DeamonLoggerExtraExtensionTest extends \PHPUnit_Framework_TestCase
+class DeamonLoggerExtraExtensionTest extends TestCase
 {
     /**
      * @var DeamonLoggerExtraExtension
@@ -63,7 +64,7 @@ class DeamonLoggerExtraExtensionTest extends \PHPUnit_Framework_TestCase
 
         $defaultConfigValues = [
             'channel_prefix' => null,
-            'user_class' => '\Symfony\Component\Security\Core\User\UserInterface',
+            'user_class' => null,
             'user_methods' => [
                 'user_name' => 'getUsername',
             ],

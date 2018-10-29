@@ -217,6 +217,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
      * @param array  $context
      *
      * @return array Record
+     * @throws \Psr\Log\InvalidArgumentException
      */
     protected function getRecord($level = Logger::WARNING, $message = 'test', $context = array())
     {

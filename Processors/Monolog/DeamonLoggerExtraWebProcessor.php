@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 {
@@ -53,7 +54,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private $record;
 
-    public function __construct(array $config = null)
+    public function __construct(?array $config = null)
     {
         parent::__construct();
         $this->channelPrefix = $config['channel_prefix'];
@@ -82,7 +83,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     /**
      * Add extra info about the context of the generated log.
      */
-    private function addContextInfo()
+    private function addContextInfo(): void
     {
         if (null !== $this->environment) {
             $this->addInfo('env', $this->environment);
@@ -99,7 +100,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     /**
      * Add extra info about the request generating the log.
      */
-    private function addRequestInfo()
+    private function addRequestInfo(): void
     {
         if (null !== $this->requestStack) {
             $request = $this->requestStack->getCurrentRequest();
@@ -116,7 +117,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     /**
      * Add extra info on the user generating the log.
      */
-    private function addUserInfo()
+    private function addUserInfo(): void
     {
         if (!$this->configShowExtraInfo('user')) {
             return;
@@ -139,9 +140,9 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     /**
      * append method result of user object.
      *
-     * @param $user
+     * @param UserInterface $user
      */
-    private function appendUserMethodInfo($user)
+    private function appendUserMethodInfo(UserInterface $user): void
     {
         foreach ($this->userMethods as $name => $method) {
             if (method_exists($user, $method)) {
@@ -153,11 +154,11 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     /**
      * Check if passed token is an instance of TokenInterface and an instance of config UserClass.
      *
-     * @param $token
+     * @param TokenInterface|null $token
      *
      * @return bool
      */
-    private function isUserInstanceValid($token)
+    private function isUserInstanceValid(?TokenInterface $token): bool
     {
         return $token instanceof TokenInterface && $token->getUser() instanceof $this->userClass;
     }
@@ -165,7 +166,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     /**
      * Add channel info to ease the log interpretation.
      */
-    private function addChannelInfo()
+    private function addChannelInfo(): void
     {
         $this->addInfo('global_channel', $this->record['channel']);
 
@@ -180,7 +181,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      * @param string $key
      * @param mixed  $value
      */
-    private function addInfo($key, $value)
+    private function addInfo(string $key, $value): void
     {
         if ($this->configShowExtraInfo($key) && $value !== null) {
             $this->record['extra'][$key] = $value;
@@ -194,7 +195,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      *
      * @return bool
      */
-    private function configShowExtraInfo($extraInfo)
+    private function configShowExtraInfo(string $extraInfo): bool
     {
         return isset($this->displayConfig[$extraInfo]) && $this->displayConfig[$extraInfo];
     }
@@ -202,7 +203,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     /**
      * @param DeamonLoggerExtraContext $loggerExtraContext
      */
-    public function setLoggerExtraContext(DeamonLoggerExtraContext $loggerExtraContext)
+    public function setLoggerExtraContext(DeamonLoggerExtraContext $loggerExtraContext): void
     {
         $this->loggerExtraContext = $loggerExtraContext;
     }
@@ -210,7 +211,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     /**
      * @param string $environment
      */
-    public function setEnvironment($environment)
+    public function setEnvironment(string $environment): void
     {
         $this->environment = $environment;
     }
@@ -218,7 +219,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     /**
      * @param TokenStorageInterface $tokenStorage
      */
-    public function setTokenStorage(TokenStorageInterface $tokenStorage)
+    public function setTokenStorage(TokenStorageInterface $tokenStorage): void
     {
         $this->tokenStorage = $tokenStorage;
     }
@@ -226,7 +227,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     /**
      * @param RequestStack $requestStack
      */
-    public function setRequestStack(RequestStack $requestStack)
+    public function setRequestStack(RequestStack $requestStack): void
     {
         $this->requestStack = $requestStack;
     }

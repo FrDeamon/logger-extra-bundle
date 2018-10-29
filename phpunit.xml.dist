@@ -18,6 +18,7 @@
         </whitelist>
     </filter>
     <php>
+        <server name="KERNEL_CLASS" value="App\Kernel" />
         <ini name="date.timezone" value="UTC"/>
     </php>
 </phpunit>

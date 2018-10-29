@@ -17,7 +17,7 @@ class DeamonLoggerExtraExtension extends Extension
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -27,11 +27,11 @@ class DeamonLoggerExtraExtension extends Extension
         $loader->load('processors.xml');
 
         $definition = $container->getDefinition('deamon.logger_extra.context');
-        $definition->replaceArgument(0, $config['application']['name']);
+        $definition->addArgument($config['application']['name']);
         $definition->addArgument($config['application']['locale']);
 
         $definition = $container->getDefinition('deamon.logger_extra.processors.web_processor');
-        $definition->replaceArgument(0, $config['config']);
+        $definition->addArgument($config['config']);
 
         $definition->clearTag('monolog.processor');
         foreach ($config['handlers'] as $handler) {
