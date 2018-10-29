@@ -18,7 +18,7 @@
     ],
     "require": {
         "php": ">=7.1",
-        "symfony/security": "^4.0",
+        "symfony/security-core": "^4.0",
         "symfony/dependency-injection": "^4.0",
         "symfony/monolog-bridge": "^4.0",
         "symfony/http-kernel": "^4.0",

@@ -19,7 +19,7 @@ Requirements
 ----------------
 php >=7.1
 
-symfony/security
+symfony/security-core
 symfony/dependency-injection
 symfony/monolog-bridge
 symfony/http-kernel
