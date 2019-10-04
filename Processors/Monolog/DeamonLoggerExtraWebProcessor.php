@@ -3,9 +3,11 @@
 namespace Deamon\LoggerExtraBundle\Processors\Monolog;
 
 use Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext;
-use Symfony\Bridge\Monolog\Processor\WebProcessor as BaseWebProcessor;
+use Monolog\Processor\WebProcessor as BaseWebProcessor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -56,7 +58,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 
     public function __construct(?array $config = null)
     {
-        parent::__construct();
+        parent::__construct([]);
         $this->channelPrefix = $config['channel_prefix'];
         $this->displayConfig = $config['display'];
         $this->userClass = $config['user_class'];
@@ -198,6 +200,21 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     private function configShowExtraInfo(string $extraInfo): bool
     {
         return isset($this->displayConfig[$extraInfo]) && $this->displayConfig[$extraInfo];
+    }
+
+    public function onKernelRequest(RequestEvent $event)
+    {
+        if ($event->isMasterRequest()) {
+            $this->serverData = $event->getRequest()->server->all();
+            $this->serverData['REMOTE_ADDR'] = $event->getRequest()->getClientIp();
+        }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', 4096],
+        ];
     }
 
     /**
