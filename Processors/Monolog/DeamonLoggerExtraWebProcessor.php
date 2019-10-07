@@ -114,7 +114,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
             $this->addInfo('global_channel', $this->record['channel']);
         }
 
-        if ($this->channelPrefix !== null) {
+        if ($this->channelPrefix !== null && substr($this->record['channel'], 0, strlen($this->channelPrefix)) !== $this->channelPrefix) {
             $this->record['channel'] = sprintf('%s.%s', $this->channelPrefix, $this->record['channel']);
         }
     }

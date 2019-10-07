@@ -115,7 +115,6 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $originalRecord = $this->getRecord();
         $record = $processor($originalRecord);
         $recordReparsed = $processor($record);
-        //@todo implement code to make test work or try on travis without but will fail.
 
         $this->assertArrayHasKeyAndEquals('global_channel', $recordReparsed['extra'], $originalRecord['channel'], 'global_channel must be equals to the original channel without any prefix');
         $this->assertArrayHasKeyAndEquals('channel', $recordReparsed, sprintf('prefix.%s', $originalRecord['channel']), 'channel must be equals to prefix.channel');
