@@ -174,7 +174,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
     public function testAppendChannelPrefixOnlyOnce()
     {
         $config = $this->getDisplayConfig(['global_channel' => true], 'prefix');
-        $processor = new DeamonLoggerExtraWebProcessor(new MyContainerForTests(), $config);
+        $processor = new DeamonLoggerExtraWebProcessor($config);
         $originalRecord = $this->getRecord();
         $record = $processor($originalRecord);
         $recordReparsed = $processor($record);
