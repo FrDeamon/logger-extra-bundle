@@ -146,7 +146,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         ];
     }
 
-    protected function assertArrayHasKeyAndEquals($key, $array, $value, $message = null)
+    protected function assertArrayHasKeyAndEquals($key, $array, $value, $message = '')
     {
         $this->assertArrayHasKey($key, $array);
         $this->assertEquals($value, $array[$key], $message);
