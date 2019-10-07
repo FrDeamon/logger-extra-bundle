@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class DeamonLoggerExtraWebProcessorTest extends TestCase
 {
+
     public function testProcessorWithNullContainer()
     {
         $processor = new DeamonLoggerExtraWebProcessor();
@@ -170,6 +171,18 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayHasKeyAndEquals('channel', $record, sprintf('prefix.%s', $originalRecord['channel']));
     }
 
+    public function testAppendChannelPrefixOnlyOnce()
+    {
+        $config = $this->getDisplayConfig(['global_channel' => true], 'prefix');
+        $processor = new DeamonLoggerExtraWebProcessor(new MyContainerForTests(), $config);
+        $originalRecord = $this->getRecord();
+        $record = $processor($originalRecord);
+        $recordReparsed = $processor($record);
+
+        $this->assertArrayHasKeyAndEquals('global_channel', $recordReparsed['extra'], $originalRecord['channel'], 'global_channel must be equals to the original channel without any prefix');
+        $this->assertArrayHasKeyAndEquals('channel', $recordReparsed, sprintf('prefix.%s', $originalRecord['channel']), 'channel must be equals to prefix.channel');
+    }
+
     protected function getDisplayConfig($trueValues, $channelPrefix = null, $user_class = null, $user_methods = null)
     {
         if (null === $user_class) {
@@ -205,10 +218,10 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         ];
     }
 
-    protected function assertArrayHasKeyAndEquals($key, $array, $value)
+    protected function assertArrayHasKeyAndEquals($key, $array, $value, $message = null)
     {
         $this->assertArrayHasKey($key, $array);
-        $this->assertEquals($value, $array[$key]);
+        $this->assertEquals($value, $array[$key], $message);
     }
 
     /**
