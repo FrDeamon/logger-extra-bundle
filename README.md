@@ -4,8 +4,8 @@ DeamonLoggerExtra Bundle
 [![Build Status](https://travis-ci.org/FrDeamon/logger-extra-bundle.svg?branch=master&style=flat)](https://travis-ci.org/FrDeamon/logger-extra-bundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/?branch=master)
-![symfony version](https://img.shields.io/badge/symfony->=4.0-blue.svg)
-![php version](https://img.shields.io/badge/php->=7.1-blue.svg)
+![symfony version](https://img.shields.io/badge/symfony->=5.0-blue.svg)
+![php version](https://img.shields.io/badge/php->=7.2-blue.svg)
 
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd/big.png)](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd)
@@ -17,7 +17,7 @@ If you need compatibility with previous Symfony versions, have a look at previou
 
 Requirements
 ----------------
-php >=7.1
+php >=7.2
 
 symfony/security-core
 symfony/dependency-injection
@@ -26,7 +26,7 @@ symfony/http-kernel
 symfony/http-foundation
 symfony/config
 
-Compatible with Symfony starting from 4.0
+Compatible with Symfony starting from 5.0
 
 Installation
 ----------------
@@ -34,7 +34,7 @@ Installation
 You need to add a package to your dependency list :
 ```
     // composer.json
-    "deamon/logger-extra-bundle": "^4.0"
+    "deamon/logger-extra-bundle": "^5.0"
 ```
 
 Then enable the bundle into your kernel

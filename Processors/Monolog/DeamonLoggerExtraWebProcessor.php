@@ -59,10 +59,18 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     public function __construct(?array $config = null)
     {
         parent::__construct([]);
-        $this->channelPrefix = $config['channel_prefix'];
-        $this->displayConfig = $config['display'];
-        $this->userClass = $config['user_class'];
-        $this->userMethods = $config['user_methods'];
+        if(!empty($config) && array_key_exists('channel_prefix', $config)) {
+            $this->channelPrefix = $config['channel_prefix'];
+        }
+        if(!empty($config) && array_key_exists('display', $config)) {
+            $this->displayConfig = $config['display'];
+        }
+        if(!empty($config) && array_key_exists('user_class', $config)) {
+            $this->userClass = $config['user_class'];
+        }
+        if(!empty($config) && array_key_exists('user_methods', $config)) {
+            $this->userMethods = $config['user_methods'];
+        }
     }
 
     /**
@@ -70,7 +78,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      *
      * @return array
      */
-    public function __invoke(array $record)
+    public function __invoke(array $record): array
     {
         $this->record = parent::__invoke($record);
 

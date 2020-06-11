@@ -9,3 +9,6 @@ build:
                 coverage:
                     file: 'clover-coverage.xml'
                     format: 'clover'
+    environment:
+        php:
+            version: 7.2  # or any other released version
