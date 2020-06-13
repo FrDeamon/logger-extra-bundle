@@ -17,7 +17,7 @@
         "Log"
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.2",
         "symfony/security-core": "^5.0",
         "symfony/dependency-injection": "^5.0",
         "symfony/monolog-bridge": "^5.0",

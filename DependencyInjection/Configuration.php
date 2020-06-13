@@ -18,14 +18,8 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('deamon_logger_extra');
-        // Keep compatibility with symfony/config < 4.2
-        if (!method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->root('deamon_logger_extra');
-        } else {
-            $rootNode = $treeBuilder->getRootNode();
-        }
 
-        $rootNode->children()
+        $treeBuilder->getRootNode()->children()
                 ->arrayNode('application')->isRequired()
                     ->children()
                         ->scalarNode('name')->defaultNull()->cannotBeEmpty()->end()
@@ -35,7 +29,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('handlers')->isRequired()
                     ->beforeNormalization()
                     ->ifString()
-                        ->then(function ($v) {
+                        ->then(function($v) {
                             return array($v);
                         })
                     ->end()

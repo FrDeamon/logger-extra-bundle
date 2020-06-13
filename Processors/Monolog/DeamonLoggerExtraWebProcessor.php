@@ -59,16 +59,16 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     public function __construct(?array $config = null)
     {
         parent::__construct([]);
-        if(!empty($config) && array_key_exists('channel_prefix', $config)) {
+        if (!empty($config) && array_key_exists('channel_prefix', $config)) {
             $this->channelPrefix = $config['channel_prefix'];
         }
-        if(!empty($config) && array_key_exists('display', $config)) {
+        if (!empty($config) && array_key_exists('display', $config)) {
             $this->displayConfig = $config['display'];
         }
-        if(!empty($config) && array_key_exists('user_class', $config)) {
+        if (!empty($config) && array_key_exists('user_class', $config)) {
             $this->userClass = $config['user_class'];
         }
-        if(!empty($config) && array_key_exists('user_methods', $config)) {
+        if (!empty($config) && array_key_exists('user_methods', $config)) {
             $this->userMethods = $config['user_methods'];
         }
     }
@@ -178,7 +178,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private function addChannelInfo(): void
     {
-        if(!array_key_exists('global_channel', $this->record['extra'])){
+        if (!array_key_exists('global_channel', $this->record['extra'])) {
             $this->addInfo('global_channel', $this->record['channel']);
         }
 

@@ -2,13 +2,19 @@ filter:
     excluded_paths:
         - Tests/*
 build:
-    tests:
-        override:
-            -
-                command: 'vendor/bin/simple-phpunit --coverage-clover=clover-coverage.xml'
-                coverage:
-                    file: 'clover-coverage.xml'
-                    format: 'clover'
     environment:
         php:
-            version: 7.2  # or any other released version
+            version: 7.2
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
+
+        tests-and-coverage:
+            tests:
+                override:
+                    -   command: 'vendor/bin/simple-phpunit --coverage-clover=clover-coverage.xml'
+                        coverage:
+                            file: 'clover-coverage.xml'
+                            format: 'php-clover'

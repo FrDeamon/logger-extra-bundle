@@ -7,10 +7,6 @@ DeamonLoggerExtra Bundle
 ![symfony version](https://img.shields.io/badge/symfony->=5.0-blue.svg)
 ![php version](https://img.shields.io/badge/php->=7.2-blue.svg)
 
-
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd/big.png)](https://insight.sensiolabs.com/projects/5a913c84-a190-40f7-9e46-3c2052692fcd)
-
-
 This project is used to add extra context information in your logs.  
 
 If you need compatibility with previous Symfony versions, have a look at previous releases.  
@@ -26,7 +22,8 @@ symfony/http-kernel
 symfony/http-foundation
 symfony/config
 
-Compatible with Symfony starting from 5.0
+Compatible with Symfony starting from 5.0.  
+Tags follow Symfony versions.
 
 Installation
 ----------------
