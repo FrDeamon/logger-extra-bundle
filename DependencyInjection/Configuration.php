@@ -35,7 +35,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('handlers')->isRequired()
                     ->beforeNormalization()
                     ->ifString()
-                        ->then(function ($v) {
+                        ->then(function($v) {
                             return array($v);
                         })
                     ->end()
