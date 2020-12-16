@@ -129,7 +129,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
             return;
         }
 
-        if (!$this->tokenStorage instanceof TokenStorage) {
+        if (!$this->tokenStorage instanceof TokenStorageInterface) {
             return;
         }
 
