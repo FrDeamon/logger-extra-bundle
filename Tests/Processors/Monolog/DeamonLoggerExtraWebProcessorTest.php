@@ -289,8 +289,9 @@ class MyUserWithOnlyUsername implements UserInterface
         return $this->userName;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
+		return [];
     }
 
     public function getPassword()
@@ -304,6 +305,14 @@ class MyUserWithOnlyUsername implements UserInterface
     public function eraseCredentials()
     {
     }
+
+	/**
+	 * @return string
+	 */
+	public function getUserIdentifier(): string
+	{
+		// TODO: Implement getUserIdentifier() method.
+	}
 }
 
 class MyUserWithAllFields extends MyUserWithOnlyUsername
