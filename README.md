@@ -4,8 +4,8 @@ DeamonLoggerExtra Bundle
 [![Build Status](https://travis-ci.org/FrDeamon/logger-extra-bundle.svg?branch=master&style=flat)](https://travis-ci.org/FrDeamon/logger-extra-bundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/FrDeamon/logger-extra-bundle/?branch=master)
-![symfony version](https://img.shields.io/badge/symfony->=5.0-blue.svg)
-![php version](https://img.shields.io/badge/php->=7.2-blue.svg)
+![symfony version](https://img.shields.io/badge/symfony->=6.0-blue.svg)
+![php version](https://img.shields.io/badge/php->=8.0-blue.svg)
 
 This project is used to add extra context information in your logs.  
 
@@ -13,7 +13,7 @@ If you need compatibility with previous Symfony versions, have a look at previou
 
 Requirements
 ----------------
-php >=7.2
+php >=8.0
 
 symfony/security-core
 symfony/dependency-injection
