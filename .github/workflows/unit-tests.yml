@@ -50,7 +50,7 @@ jobs:
           if [[ "${{ matrix.mode }}" = low-deps ]]; then
             COMPOSER_OPTIONS=" --prefer-lowest"
           fi
-          composer install --no-interaction --no-scripts --prefer-dist COMPOSER_OPTIONS
+          composer install --no-interaction --no-scripts --prefer-dist $COMPOSER_OPTIONS
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: ./vendor/bin/simple-phpunit
