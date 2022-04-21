@@ -1,20 +1,39 @@
 filter:
-    excluded_paths:
-        - Tests/*
-build:
-    environment:
-        php:
-            version: 7.2
-    nodes:
-        analysis:
-            tests:
-                override:
-                    - php-scrutinizer-run
+  excluded_paths:
+    - 'bin/*'
+    - 'tests/*'
+    - 'Tests/*'
+    - 'var/*'
 
-        tests-and-coverage:
-            tests:
-                override:
-                    -   command: 'vendor/bin/simple-phpunit --coverage-clover=clover-coverage.xml'
-                        coverage:
-                            file: 'clover-coverage.xml'
-                            format: 'php-clover'
+  dependency_paths:
+    - 'vendor/'
+
+checks:
+  php: true
+
+build:
+  environment:
+    php:
+      version: 7.2
+  dependencies:
+    before:
+      - restore-from-cache repository "dependencies"
+      - restore-from-cache repository "phpunit"
+    after:
+      - store-in-cache repository "dependencies" vendor/
+  nodes:
+    coverage:
+      tests:
+        override:
+          - composer validate
+          - command: 'vendor/bin/simple-phpunit --coverage-clover=clover-coverage.xml'
+            coverage:
+              file: 'clover-coverage.xml'
+              format: 'php-clover'
+          - php-scrutinizer-run
+        after:
+          - store-in-cache repository "phpunit" vendor/bin/.phpunit/
+
+build_failure_conditions:
+  - 'elements.rating(<= D).new.exists' # No new classes/methods with a rating of D or worse.
+  - 'project.metric("scrutinizer.test_coverage", < 0.80)' # Code Coverage drops below 80%.
