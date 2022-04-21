@@ -22,7 +22,7 @@ build:
     after:
       - store-in-cache repository "dependencies" vendor/
   nodes:
-    coverage:
+    analysis:
       tests:
         override:
           - composer validate
