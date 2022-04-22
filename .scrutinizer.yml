@@ -24,6 +24,9 @@ build:
       - store-in-cache repository "dependencies" vendor/
   nodes:
     analysis:
+      environment:
+        variables:
+          XDEBUG_MODE: 'coverage'
       tests:
         override:
           - composer validate
