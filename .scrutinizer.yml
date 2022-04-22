@@ -12,6 +12,7 @@ checks:
   php: true
 
 build:
+  image: default-bionic
   environment:
     php:
       version: 8.0
