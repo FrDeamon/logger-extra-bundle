@@ -14,19 +14,17 @@ jobs:
     fast_finish: true
     include:
     # Minimum supported dependencies with the latest and oldest PHP version
-    - php: 7.4
+    - php: 8.0
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="max[self]=0"
-    - php: 7.2
+    - php: 8.1
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="max[self]=0"
 
     # Test the latest stable release
-    - php: 7.2
-    - php: 7.3
-    - php: 7.4
+    - php: 8.0
       env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-text"
 
     # Latest commit to master
-    - php: 7.4
+    - php: 8.2
       env: STABILITY="dev"
 
     allow_failures:

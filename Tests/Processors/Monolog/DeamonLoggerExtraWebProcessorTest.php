@@ -284,25 +284,34 @@ class MyUserWithOnlyUsername implements UserInterface
         $this->userName = $userName;
     }
 
-    public function getUsername()
+    public function getUsername(): string
+    {
+        return $this->getUserIdentifier();
+    }
+
+    public function getUserIdentifier(): string
     {
         return $this->userName;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
+        //not needed in tests
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
+        //not needed in tests
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
+        //not needed in tests
     }
 
     public function eraseCredentials()
     {
+        //not needed in tests
     }
 }
 
@@ -337,7 +346,11 @@ class MyToken extends AbstractToken
         $this->setUser($user);
     }
 
+    /**
+     * @return mixed
+     */
     public function getCredentials()
     {
+        return '';
     }
 }
