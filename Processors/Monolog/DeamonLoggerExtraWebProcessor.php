@@ -214,7 +214,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 
     public function onKernelRequest(RequestEvent $event)
     {
-        if ($event->isMasterRequest()) {
+        if ($event->isMainRequest()) {
             $this->serverData = $event->getRequest()->server->all();
             $this->serverData['REMOTE_ADDR'] = $event->getRequest()->getClientIp();
         }
