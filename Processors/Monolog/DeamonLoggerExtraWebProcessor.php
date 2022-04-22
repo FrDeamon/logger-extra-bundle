@@ -8,76 +8,42 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 {
-    /**
-     * @var string
-     */
-    private $environment = null;
 
-    /**
-     * @var DeamonLoggerExtraContext
-     */
-    private $loggerExtraContext = null;
+    private ?string $environment = null;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage = null;
+    private ?DeamonLoggerExtraContext $loggerExtraContext = null;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack = null;
+    private ?TokenStorageInterface $tokenStorage = null;
 
-    /**
-     * @var array|null
-     */
-    private $displayConfig;
+    private ?RequestStack $requestStack = null;
 
-    /**
-     * @var string
-     */
-    private $channelPrefix;
+    private array $displayConfig;
 
-    /** @var string */
-    private $userClass;
+    private ?string $channelPrefix;
 
-    /** @var array */
-    private $userMethods;
+    private ?string $userClass;
 
-    /**
-     * @var array
-     */
-    private $record;
+    private array $userMethods;
+
+    private array $record;
 
     public function __construct(?array $config = null)
     {
         parent::__construct([]);
-        if (!empty($config) && array_key_exists('channel_prefix', $config)) {
-            $this->channelPrefix = $config['channel_prefix'];
-        }
-        if (!empty($config) && array_key_exists('display', $config)) {
-            $this->displayConfig = $config['display'];
-        }
-        if (!empty($config) && array_key_exists('user_class', $config)) {
-            $this->userClass = $config['user_class'];
-        }
-        if (!empty($config) && array_key_exists('user_methods', $config)) {
-            $this->userMethods = $config['user_methods'];
-        }
+
+            $this->channelPrefix = $config['channel_prefix'] ?? null;
+
+            $this->displayConfig = $config['display'] ?? [];
+            $this->userClass = $config['user_class'] ?? null;
+            $this->userMethods = $config['user_methods'] ?? [];
     }
 
-    /**
-     * @param array $record
-     *
-     * @return array
-     */
     public function __invoke(array $record): array
     {
         $this->record = parent::__invoke($record);
@@ -112,15 +78,13 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private function addRequestInfo(): void
     {
-        if (null !== $this->requestStack) {
-            $request = $this->requestStack->getCurrentRequest();
-            if ($request instanceof Request) {
-                $this->addInfo('url', $request->getRequestUri());
-                $this->addInfo('route', $request->get('_route'));
-                $this->addInfo('user_agent', $request->server->get('HTTP_USER_AGENT'));
-                $this->addInfo('accept_encoding', $request->headers->get('Accept-Encoding'));
-                $this->addInfo('client_ip', $request->getClientIp());
-            }
+        $request = $this->requestStack?->getCurrentRequest();
+        if ($request instanceof Request) {
+            $this->addInfo('url', $request->getRequestUri());
+            $this->addInfo('route', $request->get('_route'));
+            $this->addInfo('user_agent', $request->server->get('HTTP_USER_AGENT'));
+            $this->addInfo('accept_encoding', $request->headers->get('Accept-Encoding'));
+            $this->addInfo('client_ip', $request->getClientIp());
         }
     }
 
@@ -137,20 +101,14 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
             return;
         }
 
-        if (!$this->tokenStorage instanceof TokenStorageInterface) {
-            return;
-        }
-
-        $token = $this->tokenStorage->getToken();
+        $token = $this->tokenStorage?->getToken();
         if ($this->isUserInstanceValid($token) && null !== $user = $token->getUser()) {
             $this->appendUserMethodInfo($user);
         }
     }
 
     /**
-     * append method result of user object.
-     *
-     * @param UserInterface $user
+     * Append method result of user object.
      */
     private function appendUserMethodInfo(UserInterface $user): void
     {
@@ -163,10 +121,6 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 
     /**
      * Check if passed token is an instance of TokenInterface and an instance of config UserClass.
-     *
-     * @param TokenInterface|null $token
-     *
-     * @return bool
      */
     private function isUserInstanceValid(?TokenInterface $token): bool
     {
@@ -189,11 +143,8 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 
     /**
      * Add the extra info if configured to.
-     *
-     * @param string $key
-     * @param mixed  $value
      */
-    private function addInfo(string $key, $value): void
+    private function addInfo(string $key, mixed $value): void
     {
         if ($this->configShowExtraInfo($key) && $value !== null) {
             $this->record['extra'][$key] = $value;
@@ -202,10 +153,6 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 
     /**
      * Tells if the config to display the extra info is enabled or not.
-     *
-     * @param string $extraInfo
-     *
-     * @return bool
      */
     private function configShowExtraInfo(string $extraInfo): bool
     {
@@ -227,33 +174,21 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
         ];
     }
 
-    /**
-     * @param DeamonLoggerExtraContext $loggerExtraContext
-     */
     public function setLoggerExtraContext(DeamonLoggerExtraContext $loggerExtraContext): void
     {
         $this->loggerExtraContext = $loggerExtraContext;
     }
 
-    /**
-     * @param string $environment
-     */
     public function setEnvironment(string $environment): void
     {
         $this->environment = $environment;
     }
 
-    /**
-     * @param TokenStorageInterface $tokenStorage
-     */
     public function setTokenStorage(TokenStorageInterface $tokenStorage): void
     {
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @param RequestStack $requestStack
-     */
     public function setRequestStack(RequestStack $requestStack): void
     {
         $this->requestStack = $requestStack;
