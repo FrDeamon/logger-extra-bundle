@@ -14,7 +14,7 @@ checks:
 build:
   environment:
     php:
-      version: 7.2
+      version: 8.0
   dependencies:
     before:
       - restore-from-cache repository "dependencies"
