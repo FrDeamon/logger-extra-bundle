@@ -93,7 +93,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private function addUserInfo(): void
     {
-        if (!$this->configShowExtraInfo('user')) {
+        if (!$this->configShowExtraInfo('user') || empty($this->userClass)) {
             return;
         }
 

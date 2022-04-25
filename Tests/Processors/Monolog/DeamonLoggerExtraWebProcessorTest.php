@@ -118,6 +118,18 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayNotHasKey('user_name', $record['extra']);
     }
 
+    public function testAddUserInfoWithNullClass()
+    {
+        $config = $this->getDisplayConfig([
+            'user' => true,
+        ], null, null);
+
+        $processor = new DeamonLoggerExtraWebProcessor($config);
+        $record = $processor->__invoke($this->getRecord());
+
+        $this->assertArrayNotHasKey('user_name', $record['extra']);
+    }
+
     public function testAddUserinfoWithNoTokenStorage()
     {
         $config = $this->getDisplayConfig([
@@ -183,12 +195,8 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayHasKeyAndEquals('channel', $recordReparsed, sprintf('prefix.%s', $originalRecord['channel']), 'channel must be equals to prefix.channel');
     }
 
-    protected function getDisplayConfig($trueValues, $channelPrefix = null, $user_class = null, $user_methods = null)
+    protected function getDisplayConfig($trueValues, $channelPrefix = null, $user_class = '\Symfony\Component\Security\Core\User\UserInterface', $user_methods = null)
     {
-        if (null === $user_class) {
-            $user_class = '\Symfony\Component\Security\Core\User\UserInterface';
-        }
-
         if (!is_array($user_methods)) {
             $user_methods = [
                 'user_name' => 'getUsername',
