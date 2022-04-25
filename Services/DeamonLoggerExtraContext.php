@@ -5,7 +5,7 @@ namespace Deamon\LoggerExtraBundle\Services;
 class DeamonLoggerExtraContext
 {
     public function __construct(
-        private string $applicationName,
+        private ?string $applicationName,
         private ?string $locale = null)
     {}
 
@@ -14,7 +14,7 @@ class DeamonLoggerExtraContext
         return $this->locale;
     }
 
-    public function getApplicationName(): string
+    public function getApplicationName(): ?string
     {
         return $this->applicationName;
     }
