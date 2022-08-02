@@ -29,6 +29,7 @@ class DeamonLoggerExtraExtension extends Extension
         $definition = $container->getDefinition('deamon.logger_extra.context');
         $definition->addArgument($config['application']['name']);
         $definition->addArgument($config['application']['locale']);
+        $definition->addArgument($config['application']['version']);
 
         $definition = $container->getDefinition('deamon.logger_extra.processors.web_processor');
         $definition->addArgument($config['config']);

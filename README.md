@@ -7,9 +7,9 @@ DeamonLoggerExtra Bundle
 ![symfony version](https://img.shields.io/badge/symfony->=6.0-blue.svg)
 ![php version](https://img.shields.io/badge/php->=8.0-blue.svg)
 
-This project is used to add extra context information in your logs.  
+This project is used to add extra context information in your logs.
 
-If you need compatibility with previous Symfony versions, have a look at previous releases.  
+If you need compatibility with previous Symfony versions, have a look at previous releases.
 
 Requirements
 ----------------
@@ -68,9 +68,8 @@ With this example of monolog config, you can configure this bundle to only add e
 deamon_logger_extra:
     application:  
         name: "loc-deamonfront"
+        version: "v0.1"
     handlers: [main]
-    config:
-        channel_prefix: "v0.1"
 ```
 
 ## Config reference
@@ -81,6 +80,7 @@ deamon_logger_extra:
     application:
         name: "loc-deamonfront" # default to null
         locale: "fr" # default to null
+        version: "v0.1" # default to null
     handlers: [main] # the only required field
     config:
         channel_prefix: "v0.1" # default to null
@@ -105,6 +105,6 @@ deamon_logger_extra:
 // config/packages/deamon_logger_extra.yaml
 deamon_logger_extra:
     application: null
-    handlers: 'main'
+    handlers: ['main']
     config: null
 ```
