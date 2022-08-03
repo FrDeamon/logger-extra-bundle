@@ -4,8 +4,7 @@ namespace Deamon\LoggerExtraBundle\Tests\Processors\Monolog;
 
 use Deamon\LoggerExtraBundle\Processors\Monolog\DeamonLoggerExtraWebProcessor;
 use Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext;
-use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\Monolog\Logger;
+use Monolog\Test\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
@@ -33,27 +32,30 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
             'env' => true,
             'locale' => true,
             'application_name' => true,
+            'application_version' => true,
         ]);
 
         $processor = new DeamonLoggerExtraWebProcessor($config);
-        $processor->setLoggerExtraContext($this->getLoggerExtraContext());
+        $processor->setLoggerExtraContext($this->getLoggerExtraContext('fr', 'barVersion'));
         $processor->setEnvironment('env_foo');
         $record = $processor->__invoke($this->getRecord());
 
-        $this->assertArrayHasKeyAndEquals('env', $record['extra'], 'env_foo');
-        $this->assertArrayHasKeyAndEquals('locale', $record['extra'], 'fr');
-        $this->assertArrayHasKeyAndEquals('application', $record['extra'], 'foo_app');
+        $this->assertArrayHasKeyAndEquals('env', $record->extra, 'env_foo');
+        $this->assertArrayHasKeyAndEquals('locale', $record->extra, 'fr');
+        $this->assertArrayHasKeyAndEquals('application', $record->extra, 'foo_app');
+        $this->assertArrayHasKeyAndEquals('application_version', $record->extra, 'barVersion');
     }
 
     /**
      * @runInSeparateProcess
      */
-    public function testAddContextInfoWithoutLocale()
+    public function testAddContextInfoWithoutLocaleAndVersion()
     {
         $config = $this->getDisplayConfig([
             'env' => true,
             'locale' => true,
             'application_name' => true,
+            'application_version' => true,
         ]);
 
         $processor = new DeamonLoggerExtraWebProcessor($config);
@@ -61,9 +63,10 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $processor->setEnvironment('env_foo');
         $record = $processor->__invoke($this->getRecord());
 
-        $this->assertArrayHasKeyAndEquals('env', $record['extra'], 'env_foo');
-        $this->assertArrayNotHasKey('locale', $record['extra'], 'fr');
-        $this->assertArrayHasKeyAndEquals('application', $record['extra'], 'foo_app');
+        $this->assertArrayHasKeyAndEquals('env', $record->extra, 'env_foo');
+        $this->assertArrayNotHasKey('locale', $record->extra);
+        $this->assertArrayNotHasKey('application_version', $record->extra);
+        $this->assertArrayHasKeyAndEquals('application', $record->extra, 'foo_app');
     }
 
     public function testAddRequestInfo()
@@ -82,11 +85,11 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $processor->setRequestStack($this->getRequestStack());
         $record = $processor->__invoke($this->getRecord());
 
-        $this->assertArrayHasKeyAndEquals('url', $record['extra'], 'requested_uri');
-        $this->assertArrayHasKeyAndEquals('route', $record['extra'], 'requested_route');
-        $this->assertArrayHasKeyAndEquals('user_agent', $record['extra'], 'user_agent_string');
-        $this->assertArrayHasKeyAndEquals('accept_encoding', $record['extra'], 'Bar-Encoding');
-        $this->assertArrayHasKeyAndEquals('client_ip', $record['extra'], '123.456.789.123');
+        $this->assertArrayHasKeyAndEquals('url', $record->extra, 'requested_uri');
+        $this->assertArrayHasKeyAndEquals('route', $record->extra, 'requested_route');
+        $this->assertArrayHasKeyAndEquals('user_agent', $record->extra, 'user_agent_string');
+        $this->assertArrayHasKeyAndEquals('accept_encoding', $record->extra, 'Bar-Encoding');
+        $this->assertArrayHasKeyAndEquals('client_ip', $record->extra, '123.456.789.123');
     }
 
     public function testAddOnlyUserInfoOnDefinedClass()
@@ -103,7 +106,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $record = $processor->__invoke($this->getRecord());
 
         // MyUserWithOnlyUsername does not implement the user_class so no extra logs
-        $this->assertArrayNotHasKey('user_name', $record['extra']);
+        $this->assertArrayNotHasKey('user_name', $record->extra);
     }
 
     public function testAddUserInfoWithNotExistingClass()
@@ -115,7 +118,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $processor = new DeamonLoggerExtraWebProcessor($config);
         $record = $processor->__invoke($this->getRecord());
 
-        $this->assertArrayNotHasKey('user_name', $record['extra']);
+        $this->assertArrayNotHasKey('user_name', $record->extra);
     }
 
     public function testAddUserInfoWithNullClass()
@@ -127,7 +130,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $processor = new DeamonLoggerExtraWebProcessor($config);
         $record = $processor->__invoke($this->getRecord());
 
-        $this->assertArrayNotHasKey('user_name', $record['extra']);
+        $this->assertArrayNotHasKey('user_name', $record->extra);
     }
 
     public function testAddUserinfoWithNoTokenStorage()
@@ -139,7 +142,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $processor = new DeamonLoggerExtraWebProcessor($config);
         $record = $processor->__invoke($this->getRecord());
 
-        $this->assertArrayNotHasKey('user_name', $record['extra']);
+        $this->assertArrayNotHasKey('user_name', $record->extra);
     }
 
     public function testAddUserInfo()
@@ -156,43 +159,9 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $processor->setTokenStorage($this->getTokenStorage(new MyUserWithAllFields()));
         $record = $processor->__invoke($this->getRecord());
 
-        $this->assertArrayHasKeyAndEquals('user_id', $record['extra'], 1);
-        $this->assertArrayHasKeyAndEquals('user_email', $record['extra'], 'foo@acme.com');
-        $this->assertArrayHasKeyAndEquals('user_name', $record['extra'], 'foo');
-    }
-
-    public function testAddChannelInfoWithoutChannelPrefix()
-    {
-        $config = $this->getDisplayConfig(['global_channel' => true]);
-        $processor = new DeamonLoggerExtraWebProcessor($config);
-
-        $originalRecord = $this->getRecord();
-        $record = $processor->__invoke($originalRecord);
-
-        $this->assertArrayHasKeyAndEquals('global_channel', $record['extra'], $originalRecord['channel']);
-    }
-
-    public function testAddChannelInfoWithChannelPrefix()
-    {
-        $config = $this->getDisplayConfig(['global_channel' => true], 'prefix');
-        $processor = new DeamonLoggerExtraWebProcessor($config);
-        $originalRecord = $this->getRecord();
-        $record = $processor->__invoke($originalRecord);
-
-        $this->assertArrayHasKeyAndEquals('global_channel', $record['extra'], $originalRecord['channel']);
-        $this->assertArrayHasKeyAndEquals('channel', $record, sprintf('prefix.%s', $originalRecord['channel']));
-    }
-
-    public function testAppendChannelPrefixOnlyOnce()
-    {
-        $config = $this->getDisplayConfig(['global_channel' => true], 'prefix');
-        $processor = new DeamonLoggerExtraWebProcessor($config);
-        $originalRecord = $this->getRecord();
-        $record = $processor($originalRecord);
-        $recordReparsed = $processor($record);
-
-        $this->assertArrayHasKeyAndEquals('global_channel', $recordReparsed['extra'], $originalRecord['channel'], 'global_channel must be equals to the original channel without any prefix');
-        $this->assertArrayHasKeyAndEquals('channel', $recordReparsed, sprintf('prefix.%s', $originalRecord['channel']), 'channel must be equals to prefix.channel');
+        $this->assertArrayHasKeyAndEquals('user_id', $record->extra, 1);
+        $this->assertArrayHasKeyAndEquals('user_email', $record->extra, 'foo@acme.com');
+        $this->assertArrayHasKeyAndEquals('user_name', $record->extra, 'foo');
     }
 
     protected function getDisplayConfig($trueValues, $channelPrefix = null, $user_class = '\Symfony\Component\Security\Core\User\UserInterface', $user_methods = null)
@@ -207,6 +176,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
                 'env' => false,
                 'locale' => false,
                 'application_name' => false,
+                'application_version' => false,
                 'url' => false,
                 'route' => false,
                 'user_agent' => false,
@@ -219,7 +189,6 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         );
 
         return [
-            'channel_prefix' => $channelPrefix,
             'user_class' => $user_class,
             'user_methods' => $user_methods,
             'display' => $ret,
@@ -230,27 +199,6 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
     {
         $this->assertArrayHasKey($key, $array);
         $this->assertEquals($value, $array[$key], $message);
-    }
-
-    /**
-     * @param int    $level
-     * @param string $message
-     * @param array  $context
-     *
-     * @return array Record
-     * @throws \Psr\Log\InvalidArgumentException
-     */
-    protected function getRecord($level = Logger::WARNING, $message = 'test', $context = array())
-    {
-        return array(
-            'message' => $message,
-            'context' => $context,
-            'level' => $level,
-            'level_name' => Logger::getLevelName($level),
-            'channel' => 'test',
-            'datetime' => \DateTime::createFromFormat('U.u', sprintf('%.6F', microtime(true))),
-            'extra' => array(),
-        );
     }
 
     private function getRequestStack()
@@ -269,9 +217,9 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         return $stack;
     }
 
-    private function getLoggerExtraContext($locale = 'fr')
+    private function getLoggerExtraContext($locale = 'fr', $version = null)
     {
-        return new DeamonLoggerExtraContext('foo_app', $locale);
+        return new DeamonLoggerExtraContext('foo_app', $locale, $version);
     }
 
     private function getTokenStorage(UserInterface $user = null)

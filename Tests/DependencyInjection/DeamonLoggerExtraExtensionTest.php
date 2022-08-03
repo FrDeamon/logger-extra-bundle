@@ -44,8 +44,9 @@ class DeamonLoggerExtraExtensionTest extends TestCase
 
         $definition1 = $this->container->getDefinition('deamon.logger_extra.context');
         $this->assertEquals('foo', $definition1->getArgument(0));
-        $this->assertCount(2, $definition1->getArguments());
+        $this->assertCount(3, $definition1->getArguments());
         $this->assertEquals('fr', $definition1->getArgument(1));
+        $this->assertEquals('barVersion', $definition1->getArgument(2));
 
         $definition2 = $this->container->getDefinition('deamon.logger_extra.processors.web_processor');
         $this->assertEquals($configs[0]['config'], $definition2->getArgument(0));
@@ -72,13 +73,14 @@ class DeamonLoggerExtraExtensionTest extends TestCase
                 'env' => true,
                 'locale' => true,
                 'application_name' => true,
+                'application_version' => true,
                 'url' => true,
                 'route' => true,
                 'user_agent' => true,
                 'accept_encoding' => true,
                 'client_ip' => true,
                 'user' => true,
-                'global_channel' => true,
+                'global_channel' => false,
             ],
         ];
         $this->extension->load($configs, $this->container);
@@ -88,8 +90,9 @@ class DeamonLoggerExtraExtensionTest extends TestCase
 
         $definition1 = $this->container->getDefinition('deamon.logger_extra.context');
         $this->assertNull($definition1->getArgument(0));
-        $this->assertCount(2, $definition1->getArguments());
+        $this->assertCount(3, $definition1->getArguments());
         $this->assertNull($definition1->getArgument(1));
+        $this->assertNull($definition1->getArgument(2));
 
         $definition2 = $this->container->getDefinition('deamon.logger_extra.processors.web_processor');
         $this->assertEquals($defaultConfigValues, $definition2->getArgument(0));
@@ -126,6 +129,7 @@ class DeamonLoggerExtraExtensionTest extends TestCase
             'application' => [
                 'name' => 'foo',
                 'locale' => 'fr',
+                'version' => 'barVersion'
             ],
             'handlers' => ['bar'],
             'config' => [
@@ -138,6 +142,7 @@ class DeamonLoggerExtraExtensionTest extends TestCase
                     'env' => true,
                     'locale' => true,
                     'application_name' => true,
+                    'application_version' => true,
                     'url' => true,
                     'route' => true,
                     'user_agent' => true,

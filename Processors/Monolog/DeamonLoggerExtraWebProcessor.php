@@ -3,6 +3,7 @@
 namespace Deamon\LoggerExtraBundle\Processors\Monolog;
 
 use Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext;
+use Monolog\LogRecord;
 use Monolog\Processor\WebProcessor as BaseWebProcessor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -31,27 +32,26 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 
     private array $userMethods;
 
-    private array $record;
+    private LogRecord $record;
 
     public function __construct(?array $config = null)
     {
         parent::__construct([]);
 
-            $this->channelPrefix = $config['channel_prefix'] ?? null;
+        $this->channelPrefix =$config['channel_prefix'] ?? null;
 
-            $this->displayConfig = $config['display'] ?? [];
-            $this->userClass = $config['user_class'] ?? null;
-            $this->userMethods = $config['user_methods'] ?? [];
+        $this->userMethods = $config['user_methods'] ?? [];
+        $this->displayConfig = $config['display'] ?? [];
+        $this->userClass = $config['user_class'] ?? null;
     }
 
-    public function __invoke(array $record): array
+    public function __invoke(LogRecord $record): LogRecord
     {
         $this->record = parent::__invoke($record);
 
         $this->addContextInfo();
         $this->addRequestInfo();
         $this->addUserInfo();
-        $this->addChannelInfo();
 
         return $this->record;
     }
@@ -68,8 +68,10 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
         if (null !== $this->loggerExtraContext) {
             $this->addInfo('locale', $this->loggerExtraContext->getLocale());
             if ($this->configShowExtraInfo('application_name')) {
-                $this->record['extra']['application'] = $this->loggerExtraContext->getApplicationName();
+                $this->record->extra['application'] = $this->loggerExtraContext->getApplicationName();
             }
+            $applicationVersion = $this->loggerExtraContext->getApplicationVersion() ?? $this->channelPrefix;
+            $this->addInfo('application_version', $applicationVersion);
         }
     }
 
@@ -114,7 +116,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     {
         foreach ($this->userMethods as $name => $method) {
             if (method_exists($user, $method)) {
-                $this->record['extra'][$name] = $user->$method();
+                $this->record->extra[$name] = $user->$method();
             }
         }
     }
@@ -128,26 +130,12 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     }
 
     /**
-     * Add channel info to ease the log interpretation.
-     */
-    private function addChannelInfo(): void
-    {
-        if (!array_key_exists('global_channel', $this->record['extra'])) {
-            $this->addInfo('global_channel', $this->record['channel']);
-        }
-
-        if ($this->channelPrefix !== null && substr($this->record['channel'], 0, strlen($this->channelPrefix)) !== $this->channelPrefix) {
-            $this->record['channel'] = sprintf('%s.%s', $this->channelPrefix, $this->record['channel']);
-        }
-    }
-
-    /**
      * Add the extra info if configured to.
      */
     private function addInfo(string $key, mixed $value): void
     {
         if ($this->configShowExtraInfo($key) && $value !== null) {
-            $this->record['extra'][$key] = $value;
+            $this->record->extra[$key] = $value;
         }
     }
 

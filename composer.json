@@ -21,7 +21,7 @@
         "symfony/security-core": "^6.0",
         "symfony/dependency-injection": "^6.0",
         "symfony/monolog-bridge": "^6.0",
-        "monolog/monolog": "^2.0",
+        "monolog/monolog": "^3.0",
         "symfony/http-kernel": "^6.0",
         "symfony/http-foundation": "^6.0",
         "symfony/config": "^6.0"
