@@ -26,7 +26,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
 
     private array $displayConfig;
 
-    private ?string $applicationVersion;
+    private ?string $channelPrefix;
 
     private ?string $userClass;
 
@@ -38,9 +38,11 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
     {
         parent::__construct([]);
 
+        $this->channelPrefix =$config['channel_prefix'] ?? null;
+
+        $this->userMethods = $config['user_methods'] ?? [];
         $this->displayConfig = $config['display'] ?? [];
         $this->userClass = $config['user_class'] ?? null;
-        $this->userMethods = $config['user_methods'] ?? [];
     }
 
     public function __invoke(LogRecord $record): LogRecord
@@ -68,10 +70,8 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
             if ($this->configShowExtraInfo('application_name')) {
                 $this->record->extra['application'] = $this->loggerExtraContext->getApplicationName();
             }
-            $this->applicationVersion = $this->loggerExtraContext->getApplicationVersion() ?? $config['channel_prefix'] ?? null;
-            if ($this->configShowExtraInfo('application_version')) {
-                $this->record->extra['application_version'] = $this->applicationVersion;
-            }
+            $applicationVersion = $this->loggerExtraContext->getApplicationVersion() ?? $this->channelPrefix;
+            $this->addInfo('application_version', $applicationVersion);
         }
     }
 
