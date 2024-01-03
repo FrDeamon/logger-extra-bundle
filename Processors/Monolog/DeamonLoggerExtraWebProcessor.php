@@ -133,7 +133,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
             return;
         }
 
-        if (!class_exists($this->userClass) && !interface_exists($this->userClass)) {
+        if ($this->userClass && !class_exists($this->userClass) && !interface_exists($this->userClass)) {
             return;
         }
 
@@ -170,7 +170,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
      */
     private function isUserInstanceValid(?TokenInterface $token): bool
     {
-        return $token instanceof TokenInterface && $token->getUser() instanceof $this->userClass;
+        return $token instanceof TokenInterface && $this->userClass && $token->getUser() instanceof $this->userClass;
     }
 
     /**
