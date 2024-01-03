@@ -118,6 +118,19 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayNotHasKey('user_name', $record['extra']);
     }
 
+
+    public function testAddUserInfoWithEmptyUserClass()
+    {
+        $config = $this->getDisplayConfig([
+            'user' => true,
+        ], null, '');
+
+        $processor = new DeamonLoggerExtraWebProcessor($config);
+        $record = $processor->__invoke($this->getRecord());
+
+        $this->assertArrayNotHasKey('user_name', $record['extra']);
+    }
+
     public function testAddUserinfoWithNoTokenStorage()
     {
         $config = $this->getDisplayConfig([
