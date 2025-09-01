@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class DeamonLoggerExtraWebProcessorTest extends TestCase
 {
 
-    public function testProcessorWithNullContainer()
+    public function testProcessorWithNullContainer(): void
     {
         $processor = new DeamonLoggerExtraWebProcessor();
         $originalRecord = $this->getRecord();
@@ -26,7 +26,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testAddContextInfo()
+    public function testAddContextInfo(): void
     {
         $config = $this->getDisplayConfig([
             'env' => true,
@@ -49,7 +49,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testAddContextInfoWithoutLocaleAndVersion()
+    public function testAddContextInfoWithoutLocaleAndVersion(): void
     {
         $config = $this->getDisplayConfig([
             'env' => true,
@@ -69,7 +69,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayHasKeyAndEquals('application', $record->extra, 'foo_app');
     }
 
-    public function testAddRequestInfo()
+    public function testAddRequestInfo(): void
     {
         $config = $this->getDisplayConfig(
             [
@@ -92,7 +92,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayHasKeyAndEquals('client_ip', $record->extra, '123.456.789.123');
     }
 
-    public function testAddOnlyUserInfoOnDefinedClass()
+    public function testAddOnlyUserInfoOnDefinedClass(): void
     {
         $config = $this->getDisplayConfig([
             'user' => true,
@@ -109,7 +109,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayNotHasKey('user_name', $record->extra);
     }
 
-    public function testAddUserInfoWithNotExistingClass()
+    public function testAddUserInfoWithNotExistingClass(): void
     {
         $config = $this->getDisplayConfig([
             'user' => true,
@@ -121,7 +121,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayNotHasKey('user_name', $record->extra);
     }
 
-    public function testAddUserInfoWithNullClass()
+    public function testAddUserInfoWithNullClass(): void
     {
         $config = $this->getDisplayConfig([
             'user' => true,
@@ -133,7 +133,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayNotHasKey('user_name', $record->extra);
     }
 
-    public function testAddUserinfoWithNoTokenStorage()
+    public function testAddUserinfoWithNoTokenStorage(): void
     {
         $config = $this->getDisplayConfig([
             'user' => true,
@@ -145,7 +145,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayNotHasKey('user_name', $record->extra);
     }
 
-    public function testAddUserInfo()
+    public function testAddUserInfo(): void
     {
         $config = $this->getDisplayConfig([
             'user' => true,
@@ -164,7 +164,7 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         $this->assertArrayHasKeyAndEquals('user_name', $record->extra, 'foo');
     }
 
-    protected function getDisplayConfig($trueValues, $channelPrefix = null, $user_class = '\Symfony\Component\Security\Core\User\UserInterface', $user_methods = null)
+    protected function getDisplayConfig($trueValues, $channelPrefix = null, $user_class = '\Symfony\Component\Security\Core\User\UserInterface', $user_methods = null): array
     {
         if (!is_array($user_methods)) {
             $user_methods = [
@@ -195,13 +195,13 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         ];
     }
 
-    protected function assertArrayHasKeyAndEquals($key, $array, $value, $message = '')
+    protected function assertArrayHasKeyAndEquals($key, $array, $value, $message = ''): void
     {
         $this->assertArrayHasKey($key, $array);
         $this->assertEquals($value, $array[$key], $message);
     }
 
-    private function getRequestStack()
+    private function getRequestStack(): RequestStack
     {
         $request = new Request([], [], [
             '_route' => 'requested_route',
@@ -217,12 +217,12 @@ class DeamonLoggerExtraWebProcessorTest extends TestCase
         return $stack;
     }
 
-    private function getLoggerExtraContext($locale = 'fr', $version = null)
+    private function getLoggerExtraContext($locale = 'fr', $version = null): DeamonLoggerExtraContext
     {
         return new DeamonLoggerExtraContext('foo_app', $locale, $version);
     }
 
-    private function getTokenStorage(UserInterface $user = null)
+    private function getTokenStorage(?UserInterface $user = null): TokenStorage
     {
         $storage = new TokenStorage();
         $storage->setToken(new MyToken($user));
@@ -265,7 +265,7 @@ class MyUserWithOnlyUsername implements UserInterface
         //not needed in tests
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         //not needed in tests
     }

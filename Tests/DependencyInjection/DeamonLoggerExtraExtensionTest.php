@@ -32,7 +32,7 @@ class DeamonLoggerExtraExtensionTest extends TestCase
         $this->container = new ContainerBuilder();
     }
 
-    public function testLoad()
+    public function testLoad(): void
     {
         $configs = [
             $this->getValidConfigFull(),
@@ -57,7 +57,7 @@ class DeamonLoggerExtraExtensionTest extends TestCase
         $this->assertEquals('bar', $tag[0]['handler']);
     }
 
-    public function testDefaultValue()
+    public function testDefaultValue(): void
     {
         $configs = [
             $this->getValidConfigMin(),
@@ -98,7 +98,7 @@ class DeamonLoggerExtraExtensionTest extends TestCase
         $this->assertEquals($defaultConfigValues, $definition2->getArgument(0));
     }
 
-    public function testConvertStringHandlerToArray()
+    public function testConvertStringHandlerToArray(): void
     {
         $configs = [
             [
@@ -123,7 +123,7 @@ class DeamonLoggerExtraExtensionTest extends TestCase
     /**
      * @return array
      */
-    private function getValidConfigFull()
+    private function getValidConfigFull(): array
     {
         return [
             'application' => [
@@ -155,10 +155,7 @@ class DeamonLoggerExtraExtensionTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    private function getValidConfigMin()
+    private function getValidConfigMin(): array
     {
         return [
             'application' => null,
