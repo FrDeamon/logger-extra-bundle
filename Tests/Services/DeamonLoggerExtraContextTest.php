@@ -12,13 +12,13 @@ class DeamonLoggerExtraContextTest extends TestCase
      *
      * @param string $locale
      */
-    public function testGetLocale($locale)
+    public function testGetLocale($locale): void
     {
         $context = new DeamonLoggerExtraContext('', $locale);
         $this->assertEquals($locale, $context->getLocale(), sprintf('locale should be %s, %s returned.', $locale, $context->getLocale()));
     }
 
-    public function getLocaleDataset()
+    public function getLocaleDataset(): array
     {
         return [
             ['fr', 'locale should be fr'],
@@ -31,13 +31,13 @@ class DeamonLoggerExtraContextTest extends TestCase
      *
      * @param $applicationName
      */
-    public function testGetApplicationName($applicationName)
+    public function testGetApplicationName($applicationName): void
     {
         $context = new DeamonLoggerExtraContext($applicationName, 'fr');
         $this->assertEquals($applicationName, $context->getApplicationName(), sprintf('application_name should be %s, %s returned.', $applicationName, $context->getApplicationName()));
     }
 
-    public function getApplicationNameDataset()
+    public function getApplicationNameDataset(): array
     {
         return [
             ['github.com/deamon'],

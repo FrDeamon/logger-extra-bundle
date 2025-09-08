@@ -17,17 +17,17 @@
         "Log"
     ],
     "require": {
-        "php": ">=8.0.2",
-        "symfony/security-core": "^6.0",
-        "symfony/dependency-injection": "^6.0",
-        "symfony/monolog-bridge": "^6.0",
+        "php": ">=8.2",
+        "symfony/security-core": "^7.0",
+        "symfony/dependency-injection": "^7.0",
+        "symfony/monolog-bridge": "^7.0",
         "monolog/monolog": "^3.0",
-        "symfony/http-kernel": "^6.0",
-        "symfony/http-foundation": "^6.0",
-        "symfony/config": "^6.0"
+        "symfony/http-kernel": "^7.0",
+        "symfony/http-foundation": "^7.2",
+        "symfony/config": "^7.0"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^6.0"
+        "symfony/phpunit-bridge": "^7.0"
     },
     "autoload": {
         "psr-4": {
@@ -36,7 +36,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "6.0.x-dev"
+            "dev-master": "7.0.x-dev"
         }
     },
     "suggest": {
