@@ -1,0 +1,7 @@
+services:
+    deamon.logger_extra.context:
+        class: Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext
+
+    Deamon\LoggerExtraBundle\Services\DeamonLoggerExtraContext:
+        alias: deamon.logger_extra.context
+
