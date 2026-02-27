@@ -1,0 +1,16 @@
+services:
+    deamon.logger_extra.processors.web_processor:
+        class: Deamon\LoggerExtraBundle\Processors\Monolog\DeamonLoggerExtraWebProcessor
+        calls:
+            - setLoggerExtraContext:
+                - '@deamon.logger_extra.context'
+            - setEnvironment:
+                - '%kernel.environment%'
+            - setTokenStorage:
+                - '@security.token_storage'
+            - setRequestStack:
+                - '@request_stack'
+
+    Deamon\LoggerExtraBundle\Processors\Monolog\DeamonLoggerExtraWebProcessor:
+        alias: deamon.logger_extra.processors.web_processor
+

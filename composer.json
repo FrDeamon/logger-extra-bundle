@@ -23,8 +23,9 @@
         "symfony/monolog-bridge": "^7.0",
         "monolog/monolog": "^3.0",
         "symfony/http-kernel": "^7.0",
-        "symfony/http-foundation": "^7.2",
-        "symfony/config": "^7.0"
+        "symfony/http-foundation": "^7.0",
+        "symfony/config": "^7.0",
+        "symfony/yaml": "^7.0"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^7.0"

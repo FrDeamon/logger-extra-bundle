@@ -83,7 +83,7 @@ class DeamonLoggerExtraWebProcessor extends BaseWebProcessor
         $request = $this->requestStack?->getCurrentRequest();
         if ($request instanceof Request) {
             $this->addInfo('url', $request->getRequestUri());
-            $this->addInfo('route', $request->get('_route'));
+            $this->addInfo('route', $request->attributes->get('_route'));
             $this->addInfo('user_agent', $request->server->get('HTTP_USER_AGENT'));
             $this->addInfo('accept_encoding', $request->headers->get('Accept-Encoding'));
             $this->addInfo('client_ip', $request->getClientIp());
