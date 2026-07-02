@@ -7,9 +7,9 @@ services:
             - setEnvironment:
                 - '%kernel.environment%'
             - setTokenStorage:
-                - '@security.token_storage'
+                - '@?security.token_storage'
             - setRequestStack:
-                - '@request_stack'
+                - '@?request_stack'
 
     Deamon\LoggerExtraBundle\Processors\Monolog\DeamonLoggerExtraWebProcessor:
         alias: deamon.logger_extra.processors.web_processor

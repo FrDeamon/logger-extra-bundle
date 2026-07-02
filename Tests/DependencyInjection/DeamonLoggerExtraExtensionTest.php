@@ -4,7 +4,11 @@ namespace DependencyInjection;
 
 use Deamon\LoggerExtraBundle\DependencyInjection\DeamonLoggerExtraExtension;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 class DeamonLoggerExtraExtensionTest extends TestCase
 {
@@ -120,6 +124,21 @@ class DeamonLoggerExtraExtensionTest extends TestCase
         $this->assertEquals('bar', $tag[0]['handler']);
     }
 
+    public function testOptionalServiceReferencesUseIgnoreOnInvalidBehavior(): void
+    {
+        $loader = new YamlFileLoader(
+            $this->container,
+            new FileLocator(__DIR__ . '/../../Resources/config')
+        );
+        $loader->load('processors.yaml');
+
+        $definition = $this->container->getDefinition('deamon.logger_extra.processors.web_processor');
+        $methodCalls = $definition->getMethodCalls();
+
+        $this->assertReferenceUsesIgnoreOnInvalidBehavior($methodCalls, 'setTokenStorage');
+        $this->assertReferenceUsesIgnoreOnInvalidBehavior($methodCalls, 'setRequestStack');
+    }
+
     /**
      * @return array
      */
@@ -162,5 +181,25 @@ class DeamonLoggerExtraExtensionTest extends TestCase
             'handlers' => ['bar'],
             'config' => null,
         ];
+    }
+
+    /**
+     * @param array<int, array{0: string, 1: array<int, mixed>}> $methodCalls
+     */
+    private function assertReferenceUsesIgnoreOnInvalidBehavior(array $methodCalls, string $methodName): void
+    {
+        foreach ($methodCalls as $methodCall) {
+            if ($methodCall[0] !== $methodName) {
+                continue;
+            }
+
+            $this->assertCount(1, $methodCall[1]);
+            $this->assertInstanceOf(Reference::class, $methodCall[1][0]);
+            $this->assertSame(ContainerInterface::IGNORE_ON_INVALID_REFERENCE, $methodCall[1][0]->getInvalidBehavior());
+
+            return;
+        }
+
+        $this->fail(sprintf('Method call "%s" was not found.', $methodName));
     }
 }
